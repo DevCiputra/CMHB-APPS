@@ -39,10 +39,10 @@ class AuthViewModel(
         }
     }
 
-    fun login(username: String, password: String) {
+    fun login(email: String, password: String) {
         viewModelScope.launch {
             _authState.value = StateManagement.Loading
-            val result = authUseCase.invoke(username, password)
+            val result = authUseCase.invoke(email, password)
             result.fold(
                 onSuccess = { signResponse ->
                     authUseCase.invoke(user = signResponse.user)
@@ -56,10 +56,20 @@ class AuthViewModel(
         }
     }
 
-    fun register(username: String , email: String, password:String, passwordConfirm: String, role: String) {
+    fun register(
+        username: String,
+        email: String,
+        password: String,
+        passwordConfirmation:String,
+        role:String,
+        whatsaap: String,
+        kota: String,
+        provinsi: String,
+        status_aktif: String
+    ) {
         viewModelScope.launch {
             _authState.value = StateManagement.Loading
-            val result = authUseCase.invoke(username, email, password, passwordConfirm, role)
+            val result = authUseCase.invoke(username, email, password, passwordConfirmation, role, whatsaap, kota, provinsi, status_aktif)
             result.fold(
                 onSuccess = { signResponse ->
                     authUseCase.invoke(user = signResponse.user)

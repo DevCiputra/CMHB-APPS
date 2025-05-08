@@ -47,7 +47,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ciputramitra.ciputramitrahospital.R
 import com.ciputramitra.ciputramitrahospital.component.PageIndicator
-import com.ciputramitra.ciputramitrahospital.response.auth.User
 import com.ciputramitra.ciputramitrahospital.ui.theme.greenColor
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsMedium
 import kotlinx.coroutines.delay

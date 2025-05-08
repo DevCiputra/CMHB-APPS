@@ -117,18 +117,18 @@ fun LoginScreen(
                     .verticalScroll(state = rememberScrollState())
             ) {
                 FormTextField(
-                    value = validationAuth.userName.value,
+                    value = validationAuth.email.value,
                     onValueChange = {
-                        validationAuth.userName = validationAuth.userName.copy(value = it)
+                        validationAuth.email = validationAuth.email.copy(value = it)
                     },
-                    label = "Username",
-                    error = validationAuth.userName.showError,
+                    label = "Email",
+                    error = validationAuth.email.showError,
                     leadingIcon = Icons.Default.AccountCircle,
-                    keyboardType = KeyboardType.Text,
+                    keyboardType = KeyboardType.Email,
                     singleLine = true,
                     suffix = {
                         Text(
-                            text = "username",
+                            text = ".com",
                             fontSize = 12.sp,
                             color = Color.LightGray
                         )
@@ -178,7 +178,7 @@ fun LoginScreen(
                     onClick = {
                         if (validationAuth.validateForm()) {
                             authViewModel.login(
-                                username = validationAuth.userName.value,
+                                email = validationAuth.email.value,
                                 password = validationAuth.password.value,
                             )
                         }

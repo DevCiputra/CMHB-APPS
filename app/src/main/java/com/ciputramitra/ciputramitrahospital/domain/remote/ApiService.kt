@@ -15,13 +15,17 @@ interface ApiService {
         @Field("password") password: String,
         @Field("password_confirmation") passwordConfirm: String,
         @Field("role") role: String,
+        @Field("whatsaap") whatsaap: String,
+        @Field("kota") kota: String,
+        @Field("provinsi") provinsi: String,
+        @Field("status_aktif") status_aktif: String,
     ): Wrapper<SignResponse>
 
 
     @FormUrlEncoded
     @POST("login")
     suspend fun login(
-        @Field("username") username: String,
+        @Field("email") email: String,
         @Field("password") password: String
     ): Wrapper<SignResponse>
 }

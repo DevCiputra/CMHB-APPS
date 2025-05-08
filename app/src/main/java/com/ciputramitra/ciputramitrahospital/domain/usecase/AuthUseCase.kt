@@ -8,12 +8,20 @@ import kotlinx.coroutines.flow.Flow
 class AuthUseCase(
     private val authRepository: AuthRepository
 ) {
-    suspend operator fun invoke(username: String, email: String, password: String, passwordConfirm: String, role:String): Result<SignResponse> {
-        return authRepository.register(username, email, password, passwordConfirm, role)
+    suspend operator fun invoke(username: String,
+                                email: String,
+                                password: String,
+                                passwordConfirmation:String,
+                                role:String,
+                                whatsaap: String,
+                                kota: String,
+                                provinsi: String,
+                                status_aktif: String): Result<SignResponse> {
+        return authRepository.register(username, email, password, passwordConfirmation, role, whatsaap, kota, provinsi, status_aktif)
     }
 
-    suspend operator fun invoke(username: String, password: String): Result<SignResponse> {
-        return authRepository.login(username = username, password = password)
+    suspend operator fun invoke(email: String, password: String): Result<SignResponse> {
+        return authRepository.login(email = email, password = password)
     }
 
     suspend operator fun invoke(token: String) {

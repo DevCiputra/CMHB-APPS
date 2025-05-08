@@ -24,7 +24,25 @@ class ValidationsAuth: ViewModel() {
         ValidationStatement(validation = { it.isNotBlank()})
     )
 
-    var phone by mutableStateOf(
+
+
+    var whatsapp by mutableStateOf(
+        ValidationStatement(
+            validation = { input ->
+                when {
+                    input.isBlank() -> false
+                    !input.startsWith("0") -> false
+                    else -> true
+                }
+            }
+        )
+    )
+
+    var kota by mutableStateOf(
+        ValidationStatement(validation = { it.isNotBlank()})
+    )
+
+    var provinsi by mutableStateOf(
         ValidationStatement(validation = { it.isNotBlank()})
     )
 
@@ -40,11 +58,13 @@ class ValidationsAuth: ViewModel() {
 
         userName = userName.copy(showError = !userName.validation(userName.value))
 
-        phone = phone.copy(showError = !phone.validation(phone.value))
+        whatsapp = whatsapp.copy(showError = !whatsapp.validation(whatsapp.value))
+        kota = kota.copy(showError = !kota.validation(kota.value))
+        provinsi = provinsi.copy(showError = !provinsi.validation(provinsi.value))
 
         showCheckBoxError = !checkBoxChange
 
         return checkBoxChange &&
-                userName.validation(userName.value)
+                email.validation(email.value)
     }
 }

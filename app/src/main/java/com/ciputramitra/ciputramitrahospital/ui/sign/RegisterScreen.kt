@@ -12,11 +12,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Approval
 import androidx.compose.material.icons.filled.ArrowCircleLeft
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Fingerprint
+import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material.icons.filled.VerifiedUser
+import androidx.compose.material.icons.filled.Whatsapp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -181,6 +184,42 @@ fun RegisterScreen(
                     singleLine = true
                 )
 
+                FormTextField(
+                    value = validationAuth.whatsapp.value,
+                    onValueChange = {
+                        validationAuth.whatsapp = validationAuth.whatsapp.copy(value = it)
+                    },
+                    label = "Whatsapp",
+                    error = validationAuth.whatsapp.showError,
+                    leadingIcon = Icons.Default.Whatsapp,
+                    keyboardType = KeyboardType.Text,
+                    singleLine = true,
+                )
+
+                FormTextField(
+                    value = validationAuth.kota.value,
+                    onValueChange = {
+                        validationAuth.kota = validationAuth.kota.copy(value = it)
+                    },
+                    label = "Kota",
+                    error = validationAuth.kota.showError,
+                    leadingIcon = Icons.Default.LocationCity,
+                    keyboardType = KeyboardType.Text,
+                    singleLine = true,
+                )
+
+                FormTextField(
+                    value = validationAuth.provinsi.value,
+                    onValueChange = {
+                        validationAuth.provinsi = validationAuth.provinsi.copy(value = it)
+                    },
+                    label = "Provinsi",
+                    error = validationAuth.provinsi.showError,
+                    leadingIcon = Icons.Default.Approval,
+                    keyboardType = KeyboardType.Text,
+                    singleLine = true,
+                )
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -207,8 +246,12 @@ fun RegisterScreen(
                                 username = validationAuth.userName.value,
                                 email = validationAuth.email.value,
                                 password = validationAuth.password.value,
-                                passwordConfirm = validationAuth.password.value,
-                                role = "Pasien"
+                                passwordConfirmation = validationAuth.password.value,
+                                role = "Pasien",
+                                whatsaap = validationAuth.whatsapp.value,
+                                kota = validationAuth.kota.value,
+                                provinsi = validationAuth.provinsi.value,
+                                status_aktif = "online",
                             )
                         }
                     }

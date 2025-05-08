@@ -15,11 +15,17 @@ class AuthRepositoryImpl(
         username: String,
         email: String,
         password: String,
-        passwordConfirm: String,
-        role: String
+        passwordConfirmation:String,
+        role:String,
+        whatsaap: String,
+        kota: String,
+        provinsi: String,
+        status_aktif: String
     ): Result<SignResponse> {
         return try {
-            val response = apiService.register(username = username, email = email, password = password, passwordConfirm = passwordConfirm, role = role)
+            val response = apiService.register(
+                username, email, password, passwordConfirmation, role, whatsaap, kota, provinsi, status_aktif
+            )
             when(response.meta?.code == 200 && response.data != null) {
                 true -> Result.success(value = response.data)
                 false -> Result.failure(exception = Exception(response.meta?.message ?: "Not found"))
@@ -39,9 +45,9 @@ class AuthRepositoryImpl(
         }
     }
 
-    override suspend fun login(username: String, password: String): Result<SignResponse> {
+    override suspend fun login(email: String, password: String): Result<SignResponse> {
         return try {
-            val response = apiService.login(username = username, password = password)
+            val response = apiService.login(email = email, password = password)
             when(response.meta?.code == 200 && response.data != null) {
                 true -> Result.success(value = response.data)
                 false -> Result.failure(exception = Exception(response.meta?.message ?: "Not Found"))

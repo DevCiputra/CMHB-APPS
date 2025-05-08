@@ -21,10 +21,15 @@ class DataStoreManager(private val context: Context) {
         val USER_TOKEN = stringPreferencesKey("USER_TOKEN")
         val USER_NAME = stringPreferencesKey("USER_NAME")
         val USER_EMAIL = stringPreferencesKey("USER_EMAIL")
+        val USER_WHATSAPP = stringPreferencesKey("USER_WHATSAPP")
+        val USER_KOTA = stringPreferencesKey("USER_KOTA")
+        val USER_PROVINSI = stringPreferencesKey("USER_PROVINSI")
         val USER_ROLE = stringPreferencesKey("USER_ROLE")
+        val USER_AVATAR = stringPreferencesKey("USER_AVATAR")
         val USER_ID = intPreferencesKey("USER_ID")
-        val USER_PICTURE = stringPreferencesKey("profile_picture")
-        val USER_WHATSAPP = stringPreferencesKey("whatsapp")
+        val USER_STATUS = stringPreferencesKey("USER_STATUS")
+
+
     }
 
 
@@ -36,12 +41,16 @@ class DataStoreManager(private val context: Context) {
 
     suspend fun saveUser(user: User) {
         context.dataStore.edit { mutablePreferences ->
-            mutablePreferences[USER_NAME] = user.username
+            mutablePreferences[USER_NAME] = user.name
             mutablePreferences[USER_EMAIL] = user.email
+            mutablePreferences[USER_WHATSAPP] = user.whatsaap
+            mutablePreferences[USER_KOTA] = user.kota
+            mutablePreferences[USER_PROVINSI] = user.provinsi
             mutablePreferences[USER_ROLE] = user.role
             mutablePreferences[USER_ID] = user.id
-            mutablePreferences[USER_PICTURE] = user.profilePicture
-            mutablePreferences[USER_WHATSAPP] = user.whatsapp
+            mutablePreferences[USER_AVATAR] = user.avatar
+            mutablePreferences[USER_STATUS] = user.statusAktif
+
         }
     }
 
@@ -68,16 +77,17 @@ class DataStoreManager(private val context: Context) {
         }
         .map { preferences ->
             User(
+                avatar = preferences[USER_AVATAR] ?: "",
                 createdAt = "",
                 email = preferences[USER_EMAIL] ?: "",
                 id = preferences[USER_ID] ?: 0,
+                kota = preferences[USER_KOTA] ?: "",
+                name = preferences[USER_NAME] ?: "",
+                provinsi = preferences[USER_PROVINSI] ?: "",
                 role = preferences[USER_ROLE] ?: "",
+                statusAktif = preferences[USER_STATUS] ?: "",
                 updatedAt = "",
-                username = preferences[USER_NAME] ?: "",
-                profilePicture = preferences[USER_PICTURE] ?: "",
-                whatsapp = preferences[USER_WHATSAPP] ?: "",
-                emailVerify = "",
-                deletedAt = ""
+                whatsaap = preferences[USER_WHATSAPP] ?: ""
             )
         }
 

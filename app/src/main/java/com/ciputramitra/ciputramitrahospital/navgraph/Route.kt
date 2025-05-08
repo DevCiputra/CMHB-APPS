@@ -1,0 +1,66 @@
+package com.ciputramitra.ciputramitrahospital.navgraph
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+object Login
+
+@Serializable
+object Register
+
+@Serializable
+object Home
+
+@Serializable
+data class ProductArgs(
+    val categoryID: Int,
+    val nameCategory: String
+)
+
+@Serializable
+object ProductAll
+
+@Serializable
+data class DetailProductArgs(
+    val productID: Int
+)
+
+@Serializable
+object Cart
+
+@Serializable
+object Checkout
+
+@Serializable
+object GoogleMap
+
+@Serializable
+data class AddressShippingArgs(
+    val cityCoordinates : String ,
+    val addressCoordinates : String
+)
+
+@Serializable
+data class PaymentArgs(
+    val tokenPayment: String,
+    val transactionID: Int
+)
+
+@Serializable
+data class DetailTransactionArgs(
+    val id: Int
+)
+
+@Serializable
+data class RatesArgs(
+    val userID: Int,
+    val productID: Int,
+    val variant: String,
+    val size: String,
+    val category: String,
+    val image: String,
+    val nameProduct: String
+)
+
+@Serializable
+object EditProfile

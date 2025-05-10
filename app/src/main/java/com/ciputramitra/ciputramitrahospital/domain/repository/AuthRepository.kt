@@ -14,7 +14,8 @@ interface AuthRepository {
         whatsaap: String,
         kota: String,
         provinsi: String,
-        status_aktif: String): Result<SignResponse>
+        status_aktif: String,
+        fcm: String): Result<SignResponse>
 
     suspend fun login(email: String, password: String): Result<SignResponse>
     suspend fun saveToken(token: String)

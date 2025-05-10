@@ -20,11 +20,12 @@ class AuthRepositoryImpl(
         whatsaap: String,
         kota: String,
         provinsi: String,
-        status_aktif: String
+        status_aktif: String,
+        fcm: String
     ): Result<SignResponse> {
         return try {
             val response = apiService.register(
-                username, email, password, passwordConfirmation, role, whatsaap, kota, provinsi, status_aktif
+                username, email, password, passwordConfirmation, role, whatsaap, kota, provinsi, status_aktif, fcm
             )
             when(response.meta?.code == 200 && response.data != null) {
                 true -> Result.success(value = response.data)

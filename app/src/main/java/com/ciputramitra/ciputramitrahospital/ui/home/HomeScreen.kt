@@ -47,6 +47,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ciputramitra.ciputramitrahospital.R
 import com.ciputramitra.ciputramitrahospital.component.PageIndicator
+import com.ciputramitra.ciputramitrahospital.response.auth.User
 import com.ciputramitra.ciputramitrahospital.ui.theme.greenColor
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsMedium
 import kotlinx.coroutines.delay
@@ -79,9 +80,9 @@ fun HomeScreen(
 
     val image = remember {
         mutableStateListOf(
-            "https://firebasestorage.googleapis.com/v0/b/shoppy-22293.appspot.com/o/mcu3.jpg?alt=media&token=8a2d526e-dfa5-4166-81f3-84b3083cd0f8",
-            "https://firebasestorage.googleapis.com/v0/b/shoppy-22293.appspot.com/o/mcu4.jpg?alt=media&token=24be3c6a-2589-4d9e-a9b0-dbb5c192e693",
-            "https://firebasestorage.googleapis.com/v0/b/shoppy-22293.appspot.com/o/mcu5.jpg?alt=media&token=0e7bf46c-d8cf-49a1-98c5-cef08062ec52"
+            "https://firebasestorage.googleapis.com/v0/b/kakaarab-4bfcf.appspot.com/o/1banner.jpg?alt=media&token=5e027330-2747-4166-99ca-4652bf398573",
+            "https://firebasestorage.googleapis.com/v0/b/kakaarab-4bfcf.appspot.com/o/banner2.jpg?alt=media&token=5a351413-7a1b-4cbd-9f53-4ec864e77979",
+            "https://firebasestorage.googleapis.com/v0/b/kakaarab-4bfcf.appspot.com/o/banner3.png?alt=media&token=ceba3cbf-1bbf-4e17-87b0-e86e1d13bb32"
         )
     }
 
@@ -103,7 +104,7 @@ fun HomeScreen(
 
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(fetchUser?.profilePicture ?: "")
+                        .data(fetchUser?.avatar ?: "")
                         .error(R.drawable.hoodie_man_profile)
                         .fallback(R.drawable.hoodie_man_profile)
                         .build(),
@@ -136,7 +137,7 @@ fun HomeScreen(
                         Text(
                             modifier = Modifier
                                 .padding(start = 2.dp),
-                            text = fetchUser?.username ?: "Hoodie man",
+                            text = fetchUser?.avatar ?: "Hoodie man",
                             fontSize = 14.sp,
                             fontFamily = poppinsMedium,
                             color = Color.Gray

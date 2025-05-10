@@ -16,8 +16,9 @@ class AuthUseCase(
                                 whatsaap: String,
                                 kota: String,
                                 provinsi: String,
-                                status_aktif: String): Result<SignResponse> {
-        return authRepository.register(username, email, password, passwordConfirmation, role, whatsaap, kota, provinsi, status_aktif)
+                                status_aktif: String,
+                                fcm: String): Result<SignResponse> {
+        return authRepository.register(username, email, password, passwordConfirmation, role, whatsaap, kota, provinsi, status_aktif, fcm)
     }
 
     suspend operator fun invoke(email: String, password: String): Result<SignResponse> {

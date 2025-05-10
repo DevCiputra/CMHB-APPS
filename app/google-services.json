@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "97886563756",
+    "project_id": "ciputramitrahospital-25e48",
+    "storage_bucket": "ciputramitrahospital-25e48.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:97886563756:android:719ad999ee067527541e09",
+        "android_client_info": {
+          "package_name": "com.ciputramitra.ciputramitrahospital"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKpyandiA_igeGgrY2ZNdEZN0xsnce69k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

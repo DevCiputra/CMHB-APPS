@@ -19,6 +19,7 @@ interface ApiService {
         @Field("kota") kota: String,
         @Field("provinsi") provinsi: String,
         @Field("status_aktif") status_aktif: String,
+        @Field("fcm") fcm: String
     ): Wrapper<SignResponse>
 
 

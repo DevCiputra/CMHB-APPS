@@ -28,6 +28,7 @@ class DataStoreManager(private val context: Context) {
         val USER_AVATAR = stringPreferencesKey("USER_AVATAR")
         val USER_ID = intPreferencesKey("USER_ID")
         val USER_STATUS = stringPreferencesKey("USER_STATUS")
+        val USER_FCM = stringPreferencesKey("USER_FCM")
 
 
     }
@@ -50,6 +51,7 @@ class DataStoreManager(private val context: Context) {
             mutablePreferences[USER_ID] = user.id
             mutablePreferences[USER_AVATAR] = user.avatar
             mutablePreferences[USER_STATUS] = user.statusAktif
+            mutablePreferences[USER_FCM] = user.fcm
 
         }
     }
@@ -87,7 +89,8 @@ class DataStoreManager(private val context: Context) {
                 role = preferences[USER_ROLE] ?: "",
                 statusAktif = preferences[USER_STATUS] ?: "",
                 updatedAt = "",
-                whatsaap = preferences[USER_WHATSAPP] ?: ""
+                whatsaap = preferences[USER_WHATSAPP] ?: "",
+                fcm = preferences[USER_FCM] ?: ""
             )
         }
 

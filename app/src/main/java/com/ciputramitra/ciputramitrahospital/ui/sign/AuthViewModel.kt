@@ -65,11 +65,12 @@ class AuthViewModel(
         whatsaap: String,
         kota: String,
         provinsi: String,
-        status_aktif: String
+        status_aktif: String,
+        fcm: String
     ) {
         viewModelScope.launch {
             _authState.value = StateManagement.Loading
-            val result = authUseCase.invoke(username, email, password, passwordConfirmation, role, whatsaap, kota, provinsi, status_aktif)
+            val result = authUseCase.invoke(username, email, password, passwordConfirmation, role, whatsaap, kota, provinsi, status_aktif, fcm)
             result.fold(
                 onSuccess = { signResponse ->
                     authUseCase.invoke(user = signResponse.user)

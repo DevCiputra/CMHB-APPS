@@ -25,5 +25,7 @@ data class User(
     @SerializedName("updated_at")
     val updatedAt: String,
     @SerializedName("whatsaap")
-    val whatsaap: String
+    val whatsaap: String,
+    @SerializedName("fcm")
+    val fcm: String
 )

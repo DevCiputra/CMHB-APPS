@@ -2,6 +2,7 @@ package com.ciputramitra.ciputramitrahospital.domain.state
 
 import com.ciputramitra.ciputramitrahospital.response.auth.SignResponse
 import com.ciputramitra.ciputramitrahospital.response.auth.User
+import com.ciputramitra.ciputramitrahospital.response.category.CategoryResponse
 
 sealed class StateManagement {
     data object Idle: StateManagement()
@@ -13,4 +14,9 @@ sealed class StateManagement {
     data class LoginSuccess(val signResponse: SignResponse): StateManagement()
     data class RegisterSuccess(val signResponse: SignResponse): StateManagement()
     data class UpdateUserSuccess(val user : User): StateManagement()
+
+//    Home
+    data class HomeSuccess(
+        val categoryResponse: CategoryResponse
+    )
 }

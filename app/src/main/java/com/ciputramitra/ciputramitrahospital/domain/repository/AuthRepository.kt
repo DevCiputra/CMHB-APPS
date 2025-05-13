@@ -6,14 +6,13 @@ import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
     suspend fun register(
-        username: String,
+        name: String,
         email: String,
         password: String,
-        passwordConfirmation:String,
+        passwordConfirm:String,
         role:String,
         whatsaap: String,
-        kota: String,
-        provinsi: String,
+        address: String,
         status_aktif: String,
         fcm: String): Result<SignResponse>
 

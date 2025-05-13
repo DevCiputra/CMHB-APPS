@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -31,7 +32,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ciputramitra.ciputramitrahospital.component.bottomNavigation
-import com.ciputramitra.ciputramitrahospital.ui.fitur.PictureScreen
 import com.ciputramitra.ciputramitrahospital.ui.home.HomeScreen
 import com.ciputramitra.ciputramitrahospital.ui.info.InfoScreen
 import com.ciputramitra.ciputramitrahospital.ui.profile.ProfileScreen
@@ -40,6 +40,7 @@ import com.ciputramitra.ciputramitrahospital.ui.sign.LoginScreen
 import com.ciputramitra.ciputramitrahospital.ui.sign.RegisterScreen
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsMedium
 import com.ciputramitra.ciputramitrahospital.ui.theme.whiteCustom
+import com.ciputramitra.ciputramitrahospital.ui.transaction.TransactionScreen
 
 @SuppressLint("NewApi")
 @RequiresApi(Build.VERSION_CODES.P)
@@ -52,11 +53,9 @@ fun NavGraph(
     val token by authViewModel.token.collectAsStateWithLifecycle()
     val fetchUser by authViewModel.fetchUser.collectAsStateWithLifecycle()
 
-
     val navController = rememberNavController()
     var selectedItemIndex by rememberSaveable { mutableIntStateOf(value = 0) }
     val context = LocalContext.current
-
 
     NavHost(
         navController =  navController,
@@ -79,18 +78,14 @@ fun NavGraph(
         composable<Register> {
             RegisterScreen(
                 onRegisterSuccess = {
-                    if(token != null) {
-                        navController.navigate(route = Home) {
-                            popUpTo(route = Login) { inclusive = true }
-                        }
+                    navController.navigate(route = Login) {
+                        popUpTo(route = Login) { inclusive = true }
                     }
                 },
                 navController = navController,
                 authViewModel = authViewModel
             )
         }
-
-
         composable<Home> {
             BackHandler(
                 enabled = true
@@ -129,7 +124,8 @@ fun NavGraph(
                                         else items.unSelectedIcon,
                                         tint = if (index == selectedItemIndex)
                                             items.selectedIconColor else items.unSelectedIconColor,
-                                        contentDescription = items.title
+                                        contentDescription = items.title,
+                                        modifier = Modifier.size(20.dp)
                                     )
                                 },
                                 colors = NavigationBarItemDefaults.colors(
@@ -155,7 +151,7 @@ fun NavGraph(
                             navController = navController,
                         )
 
-                        2 -> PictureScreen(
+                        2 -> TransactionScreen(
                             navController = navController,
                         )
 
@@ -168,3 +164,4 @@ fun NavGraph(
         }
     }
 }
+

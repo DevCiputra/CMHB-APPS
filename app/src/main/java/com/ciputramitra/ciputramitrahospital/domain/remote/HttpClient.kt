@@ -50,7 +50,7 @@ class HttpClient(private val dataStoreManager: DataStoreManager) {
         }
 
         retrofit = Retrofit.Builder()
-            .baseUrl("${BuildConfig.BASE_URL}/api/")
+            .baseUrl("${BuildConfig.BASE_URL}/api/v1/")
             .client(clientBuilder.build())
             .addConverterFactory(GsonConverterFactory.create())
             .build()

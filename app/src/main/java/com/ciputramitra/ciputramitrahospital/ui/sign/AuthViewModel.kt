@@ -24,6 +24,7 @@ class AuthViewModel(
     val fetchUser: StateFlow<User?> = _fetchUser.asStateFlow()
 
 
+
     val isLoggedIn = _token.map { it != null }
     init {
         viewModelScope.launch {
@@ -45,9 +46,16 @@ class AuthViewModel(
             val result = authUseCase.invoke(email, password)
             result.fold(
                 onSuccess = { signResponse ->
-                    authUseCase.invoke(user = signResponse.user)
-                    authUseCase.invoke(token = signResponse.accessToken)
-                    _authState.value = StateManagement.LoginSuccess( signResponse = signResponse)
+                    if (signResponse.user.role == "Pasien") {
+                        // Simpan data user dan token hanya jika role adalah Pasien
+                        authUseCase.invoke(user = signResponse.user)
+                        authUseCase.invoke(token = signResponse.accessToken)
+                        _authState.value = StateManagement.LoginSuccess(signResponse = signResponse)
+                    } else {
+                        logout()
+                        // Jika bukan Pasien, jangan simpan data dan langsung kirim error
+                        _authState.value = StateManagement.Error("Hanya untuk Pasien")
+                    }
                 },
                 onFailure = { error ->
                     _authState.value = StateManagement.Error(error.message ?: "Not Found")
@@ -57,20 +65,19 @@ class AuthViewModel(
     }
 
     fun register(
-        username: String,
+        name: String,
         email: String,
         password: String,
         passwordConfirmation:String,
         role:String,
         whatsaap: String,
-        kota: String,
-        provinsi: String,
+        address: String,
         status_aktif: String,
         fcm: String
     ) {
         viewModelScope.launch {
             _authState.value = StateManagement.Loading
-            val result = authUseCase.invoke(username, email, password, passwordConfirmation, role, whatsaap, kota, provinsi, status_aktif, fcm)
+            val result = authUseCase.invoke(name, email, password, passwordConfirmation, role, whatsaap, address, status_aktif, fcm)
             result.fold(
                 onSuccess = { signResponse ->
                     authUseCase.invoke(user = signResponse.user)
@@ -84,6 +91,19 @@ class AuthViewModel(
         }
     }
 
+    fun logout() {
+        viewModelScope.launch {
+            try {
+                authUseCase.invoke()
+                _authState.value = StateManagement.Idle
+                _fetchUser.value = null
+                _token.value = null
+            } catch (e: Exception) {
+                error(e.message ?: "Logout gagal")
+            }
+
+        }
+    }
 
     fun clearAuthState() {
         viewModelScope.launch {

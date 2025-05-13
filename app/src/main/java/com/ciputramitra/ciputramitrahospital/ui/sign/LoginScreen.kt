@@ -1,7 +1,5 @@
 package com.ciputramitra.ciputramitrahospital.ui.sign
 
-import android.util.Log
-import android.util.Log.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,9 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Fingerprint
-import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -239,11 +235,13 @@ fun LoginScreen(
 
             when(val state = loginState) {
                 is StateManagement.Loading -> LoadingLottieAnimation()
-                is StateManagement.Error -> LaunchedEffect(key1 = state) {
-                    snackBarHostState.showSnackbar(
-                        message = state.message,
-                        withDismissAction = true
-                    )
+                is StateManagement.Error ->  {
+                    LaunchedEffect(key1 = state ) {
+                        snackBarHostState.showSnackbar(
+                            message = state.message,
+                            withDismissAction = true
+                        )
+                    }
                 }
 
                 is StateManagement.LoginSuccess -> LaunchedEffect(key1 = state) {

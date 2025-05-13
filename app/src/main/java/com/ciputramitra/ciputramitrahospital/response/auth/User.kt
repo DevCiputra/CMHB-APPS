@@ -12,12 +12,10 @@ data class User(
     val email: String,
     @SerializedName("id")
     val id: Int,
-    @SerializedName("kota")
-    val kota: String,
+    @SerializedName("address")
+    val address: String,
     @SerializedName("name")
     val name: String,
-    @SerializedName("provinsi")
-    val provinsi: String,
     @SerializedName("role")
     val role: String,
     @SerializedName("status_aktif")

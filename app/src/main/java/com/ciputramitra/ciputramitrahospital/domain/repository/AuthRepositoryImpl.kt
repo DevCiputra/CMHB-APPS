@@ -12,20 +12,19 @@ class AuthRepositoryImpl(
     private val dataStoreManager: DataStoreManager
 ): AuthRepository {
     override suspend fun register(
-        username: String,
+        name: String,
         email: String,
         password: String,
-        passwordConfirmation:String,
+        passwordConfirm:String,
         role:String,
         whatsaap: String,
-        kota: String,
-        provinsi: String,
+        address: String,
         status_aktif: String,
         fcm: String
     ): Result<SignResponse> {
         return try {
             val response = apiService.register(
-                username, email, password, passwordConfirmation, role, whatsaap, kota, provinsi, status_aktif, fcm
+                name, email, password, passwordConfirm, role, whatsaap, address, status_aktif, fcm
             )
             when(response.meta?.code == 200 && response.data != null) {
                 true -> Result.success(value = response.data)

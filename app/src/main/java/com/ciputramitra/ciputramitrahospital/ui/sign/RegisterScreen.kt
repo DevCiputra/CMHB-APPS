@@ -35,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -51,6 +52,11 @@ import com.ciputramitra.ciputramitrahospital.component.LoadingLottieAnimation
 import com.ciputramitra.ciputramitrahospital.domain.state.StateManagement
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsBold
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsMedium
+import com.google.firebase.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.messaging
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,7 +70,7 @@ fun RegisterScreen(
     }
     val validationAuth: ValidationsAuth = viewModel()
     val registerState by authViewModel.authState.collectAsStateWithLifecycle()
-
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -196,25 +202,13 @@ fun RegisterScreen(
                 )
 
                 FormTextField(
-                    value = validationAuth.kota.value,
+                    value = validationAuth.address.value,
                     onValueChange = {
-                        validationAuth.kota = validationAuth.kota.copy(value = it)
+                        validationAuth.address = validationAuth.address.copy(value = it)
                     },
-                    label = "Kota",
-                    error = validationAuth.kota.showError,
+                    label = "Tulis alamat lengkap",
+                    error = validationAuth.address.showError,
                     leadingIcon = Icons.Default.LocationCity,
-                    keyboardType = KeyboardType.Text,
-                    singleLine = true,
-                )
-
-                FormTextField(
-                    value = validationAuth.provinsi.value,
-                    onValueChange = {
-                        validationAuth.provinsi = validationAuth.provinsi.copy(value = it)
-                    },
-                    label = "Provinsi",
-                    error = validationAuth.provinsi.showError,
-                    leadingIcon = Icons.Default.Approval,
                     keyboardType = KeyboardType.Text,
                     singleLine = true,
                 )
@@ -240,19 +234,21 @@ fun RegisterScreen(
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     shape = RoundedCornerShape(28.dp),
                     onClick = {
-                        if (validationAuth.validateForm()) {
-                            authViewModel.register(
-                                username = validationAuth.userName.value,
-                                email = validationAuth.email.value,
-                                password = validationAuth.password.value,
-                                passwordConfirmation = validationAuth.password.value,
-                                role = "Pasien",
-                                whatsaap = validationAuth.whatsapp.value,
-                                kota = validationAuth.kota.value,
-                                provinsi = validationAuth.provinsi.value,
-                                status_aktif = "online",
-                                fcm = ""
-                            )
+                        FirebaseMessaging.getInstance().token.addOnSuccessListener {
+                            val token = it
+                            if (validationAuth.validateForm()) {
+                                authViewModel.register(
+                                    name = validationAuth.userName.value,
+                                    email = validationAuth.email.value,
+                                    password = validationAuth.password.value,
+                                    passwordConfirmation = validationAuth.password.value,
+                                    role = "Pasien",
+                                    whatsaap = validationAuth.whatsapp.value,
+                                    address = validationAuth.address.value,
+                                    status_aktif = "online",
+                                    fcm = token
+                                )
+                            }
                         }
                     }
                 ) {

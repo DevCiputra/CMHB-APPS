@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CircleNotifications
 import androidx.compose.material.icons.filled.PersonSearch
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
@@ -40,6 +41,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -50,6 +53,7 @@ import com.ciputramitra.ciputramitrahospital.component.PageIndicator
 import com.ciputramitra.ciputramitrahospital.response.auth.User
 import com.ciputramitra.ciputramitrahospital.ui.theme.greenColor
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsMedium
+import com.ciputramitra.ciputramitrahospital.ui.theme.whiteCustom
 import kotlinx.coroutines.delay
 
 @Composable
@@ -128,7 +132,7 @@ fun HomeScreen(
                         horizontalAlignment = Alignment.Start
                     ) {
                         Text(
-                            text = "Good morning",
+                            text = "Hi!",
                             fontSize = 19.sp,
                             fontFamily = poppinsMedium,
                             color = Color.Black
@@ -137,10 +141,11 @@ fun HomeScreen(
                         Text(
                             modifier = Modifier
                                 .padding(start = 2.dp),
-                            text = fetchUser?.avatar ?: "Hoodie man",
-                            fontSize = 14.sp,
+                            text = fetchUser?.name?.uppercase() ?: "Hoodie man",
+                            fontSize = 13.sp,
                             fontFamily = poppinsMedium,
-                            color = Color.Gray
+                            color = Color.Gray,
+                            overflow = TextOverflow.Ellipsis
                         )
 
                     }
@@ -165,7 +170,7 @@ fun HomeScreen(
                             }
                         ) {
                             Icon(
-                                modifier = Modifier.size(27.dp),
+                                modifier = Modifier.size(30.dp),
                                 imageVector = Icons.Default.CircleNotifications,
                                 contentDescription = null
                             )
@@ -209,7 +214,7 @@ fun HomeScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                imageVector = Icons.Default.PersonSearch,
+                                imageVector = Icons.Rounded.Search,
                                 contentDescription = null,
                                 tint = greenColor
                             )
@@ -264,12 +269,5 @@ fun HomeScreen(
     }
 }
 
-
-
-//@Preview
-//@Composable
-//fun Header() {
-//    HeaderBar()
-//}
 
 

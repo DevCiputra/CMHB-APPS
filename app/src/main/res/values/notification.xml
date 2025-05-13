@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_notification_channel_id">general_channel</string>
+    <string name="default_notification_channel_name">General Notifications</string>
+    <string name="notification_title">Notifikasi Baru</string>
+    <string name="notification_message">Anda memiliki pesan baru</string>
+</resources>

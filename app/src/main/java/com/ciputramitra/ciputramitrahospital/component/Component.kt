@@ -14,25 +14,28 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.AddToHomeScreen
+import androidx.compose.material.icons.automirrored.rounded.Assignment
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.HomeRepairService
 import androidx.compose.material.icons.filled.MedicalInformation
 import androidx.compose.material.icons.filled.MedicalServices
-import androidx.compose.material.icons.filled.MonetizationOn
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarOutline
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.AssignmentTurnedIn
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.HomeRepairService
 import androidx.compose.material.icons.outlined.MedicalInformation
 import androidx.compose.material.icons.outlined.MedicalServices
 import androidx.compose.material.icons.outlined.MonetizationOn
 import androidx.compose.material.icons.outlined.StarRate
+import androidx.compose.material.icons.rounded.AccountCircle
+import androidx.compose.material.icons.rounded.AssignmentTurnedIn
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.MonetizationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
@@ -164,8 +167,8 @@ fun bottomNavigation(): List<BottomNavigationItems> {
     return listOf(
         BottomNavigationItems(
             title = "Home",
-            selectedIcon = Icons.Default.HomeRepairService,
-            unSelectedIcon = Icons.Outlined.HomeRepairService,
+            selectedIcon = Icons.Rounded.Home,
+            unSelectedIcon = Icons.Outlined.Home,
             selectedIconColor = greenColor,
             unSelectedIconColor = Color.Gray,
             selectedColor = Color.Black,
@@ -174,9 +177,9 @@ fun bottomNavigation(): List<BottomNavigationItems> {
             routeScreen = "/Home"
         ),
         BottomNavigationItems(
-            title = "Informasi",
-            selectedIcon = Icons.Default.MedicalInformation,
-            unSelectedIcon = Icons.Outlined.MedicalInformation,
+            title = "Information",
+            selectedIcon = Icons.Rounded.AssignmentTurnedIn,
+            unSelectedIcon = Icons.Outlined.AssignmentTurnedIn,
             selectedIconColor = greenColor,
             unSelectedIconColor = Color.Gray,
             selectedColor = Color.Black,
@@ -185,19 +188,19 @@ fun bottomNavigation(): List<BottomNavigationItems> {
             routeScreen = "/Info"
         ),
         BottomNavigationItems(
-            title = "Fiture",
-            selectedIcon = Icons.Default.MedicalServices,
-            unSelectedIcon = Icons.Outlined.MedicalServices,
+            title = "Payment",
+            selectedIcon = Icons.Rounded.MonetizationOn,
+            unSelectedIcon = Icons.Outlined.MonetizationOn,
             selectedIconColor = greenColor,
             unSelectedIconColor = Color.Gray,
             selectedColor = Color.Black,
             unSelectedColor = Color.LightGray,
             badgeCount = 0,
-            routeScreen = "/Fitur"
+            routeScreen = "/Payment"
         ),
         BottomNavigationItems(
             title = "Profile",
-            selectedIcon = Icons.Default.AccountCircle,
+            selectedIcon = Icons.Rounded.AccountCircle,
             unSelectedIcon = Icons.Outlined.AccountCircle,
             selectedIconColor = greenColor,
             unSelectedIconColor = Color.Gray,

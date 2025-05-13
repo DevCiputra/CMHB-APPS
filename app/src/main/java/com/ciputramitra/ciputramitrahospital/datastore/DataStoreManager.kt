@@ -22,8 +22,7 @@ class DataStoreManager(private val context: Context) {
         val USER_NAME = stringPreferencesKey("USER_NAME")
         val USER_EMAIL = stringPreferencesKey("USER_EMAIL")
         val USER_WHATSAPP = stringPreferencesKey("USER_WHATSAPP")
-        val USER_KOTA = stringPreferencesKey("USER_KOTA")
-        val USER_PROVINSI = stringPreferencesKey("USER_PROVINSI")
+        val USER_ADDRESS = stringPreferencesKey("USER_ADDRESS")
         val USER_ROLE = stringPreferencesKey("USER_ROLE")
         val USER_AVATAR = stringPreferencesKey("USER_AVATAR")
         val USER_ID = intPreferencesKey("USER_ID")
@@ -45,8 +44,7 @@ class DataStoreManager(private val context: Context) {
             mutablePreferences[USER_NAME] = user.name
             mutablePreferences[USER_EMAIL] = user.email
             mutablePreferences[USER_WHATSAPP] = user.whatsaap
-            mutablePreferences[USER_KOTA] = user.kota
-            mutablePreferences[USER_PROVINSI] = user.provinsi
+            mutablePreferences[USER_ADDRESS] = user.address
             mutablePreferences[USER_ROLE] = user.role
             mutablePreferences[USER_ID] = user.id
             mutablePreferences[USER_AVATAR] = user.avatar
@@ -83,9 +81,8 @@ class DataStoreManager(private val context: Context) {
                 createdAt = "",
                 email = preferences[USER_EMAIL] ?: "",
                 id = preferences[USER_ID] ?: 0,
-                kota = preferences[USER_KOTA] ?: "",
+                address = preferences[USER_ADDRESS] ?: "",
                 name = preferences[USER_NAME] ?: "",
-                provinsi = preferences[USER_PROVINSI] ?: "",
                 role = preferences[USER_ROLE] ?: "",
                 statusAktif = preferences[USER_STATUS] ?: "",
                 updatedAt = "",

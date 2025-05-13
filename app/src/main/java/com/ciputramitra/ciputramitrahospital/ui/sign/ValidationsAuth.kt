@@ -38,11 +38,7 @@ class ValidationsAuth: ViewModel() {
         )
     )
 
-    var kota by mutableStateOf(
-        ValidationStatement(validation = { it.isNotBlank()})
-    )
-
-    var provinsi by mutableStateOf(
+    var address by mutableStateOf(
         ValidationStatement(validation = { it.isNotBlank()})
     )
 
@@ -59,8 +55,7 @@ class ValidationsAuth: ViewModel() {
         userName = userName.copy(showError = !userName.validation(userName.value))
 
         whatsapp = whatsapp.copy(showError = !whatsapp.validation(whatsapp.value))
-        kota = kota.copy(showError = !kota.validation(kota.value))
-        provinsi = provinsi.copy(showError = !provinsi.validation(provinsi.value))
+        address = address.copy(showError = !address.validation(address.value))
 
         showCheckBoxError = !checkBoxChange
 

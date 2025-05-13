@@ -70,7 +70,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -80,6 +79,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
 
+//    Firebase Messaging
+    implementation(libs.firebase.messaging)
     //    Map Composable
     implementation(libs.map.composable)
 //    Font
@@ -140,4 +141,7 @@ dependencies {
     implementation(libs.room.runtime.android)
     ksp(libs.room.runtime.compiler)
     implementation(libs.room.ktx)
+
+//    Work Manager untuk handling Background Service
+    implementation(libs.work.manager.ktx)
 }

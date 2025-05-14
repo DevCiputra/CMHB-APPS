@@ -12,9 +12,11 @@ object Register
 object Home
 
 @Serializable
-data class ProductArgs(
-    val categoryID: Int,
-    val nameCategory: String
+object ConsultationOnline
+
+@Serializable
+data class CategoryPolyclinicArgs(
+    val categoryPolyclinicID : Int
 )
 
 @Serializable

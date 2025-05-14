@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "97886563756",
-    "project_id": "ciputramitrahospital-25e48",
-    "storage_bucket": "ciputramitrahospital-25e48.firebasestorage.app"
+    "project_number": "333365009077",
+    "project_id": "cmhb-super-app-tqsl7p",
+    "storage_bucket": "cmhb-super-app-tqsl7p.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:97886563756:android:719ad999ee067527541e09",
+        "mobilesdk_app_id": "1:333365009077:android:420a2d571899eb0ba2fcfc",
         "android_client_info": {
           "package_name": "com.ciputramitra.ciputramitrahospital"
         }
@@ -15,7 +15,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDKpyandiA_igeGgrY2ZNdEZN0xsnce69k"
+          "current_key": "AIzaSyCz6X6XXVSwt742JyGWJLWx5WsjmV1X38I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:333365009077:android:37f54880a4df0fd8a2fcfc",
+        "android_client_info": {
+          "package_name": "com.mycompany.cmhbsuperapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCz6X6XXVSwt742JyGWJLWx5WsjmV1X38I"
         }
       ],
       "services": {

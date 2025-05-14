@@ -52,13 +52,12 @@ class AuthViewModel(
                         authUseCase.invoke(token = signResponse.accessToken)
                         _authState.value = StateManagement.LoginSuccess(signResponse = signResponse)
                     } else {
-                        logout()
                         // Jika bukan Pasien, jangan simpan data dan langsung kirim error
                         _authState.value = StateManagement.Error("Hanya untuk Pasien")
                     }
                 },
                 onFailure = { error ->
-                    _authState.value = StateManagement.Error(error.message ?: "Not Found")
+                    _authState.value = StateManagement.Error(error.message.toString())
                 }
             )
         }
@@ -80,12 +79,10 @@ class AuthViewModel(
             val result = authUseCase.invoke(name, email, password, passwordConfirmation, role, whatsaap, address, status_aktif, fcm)
             result.fold(
                 onSuccess = { signResponse ->
-                    authUseCase.invoke(user = signResponse.user)
-                    authUseCase.invoke(token = signResponse.accessToken)
                     _authState.value = StateManagement.RegisterSuccess(signResponse = signResponse)
                 },
-                onFailure = {
-                    _authState.value = StateManagement.Error(message = "not Found")
+                onFailure = { error ->
+                    _authState.value = StateManagement.Error(error.message.toString())
                 }
             )
         }

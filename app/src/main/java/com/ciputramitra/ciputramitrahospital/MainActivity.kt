@@ -12,12 +12,16 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.ciputramitra.ciputramitrahospital.navgraph.NavGraph
+import com.ciputramitra.ciputramitrahospital.ui.consultation.ConsultationViewModel
+import com.ciputramitra.ciputramitrahospital.ui.home.HomeViewModel
 import com.ciputramitra.ciputramitrahospital.ui.sign.AuthViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
     private val splashViewModel by viewModels<SplashViewModel>()
     private val authViewModel: AuthViewModel by viewModel()
+    private val homeViewModel: HomeViewModel by viewModel()
+    private val consultationViewModel: ConsultationViewModel by viewModel()
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +34,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             requestNotificationPermission()
             NavGraph(
-                authViewModel = authViewModel
+                authViewModel = authViewModel,
+                homeViewModel = homeViewModel,
+                consultationViewModel = consultationViewModel
             )
         }
     }

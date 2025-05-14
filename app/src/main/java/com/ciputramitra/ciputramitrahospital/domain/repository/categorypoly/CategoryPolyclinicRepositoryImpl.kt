@@ -1,15 +1,15 @@
-package com.ciputramitra.ciputramitrahospital.domain.repository.home
+package com.ciputramitra.ciputramitrahospital.domain.repository.categorypoly
 
 import com.ciputramitra.ciputramitrahospital.domain.remote.ApiService
-import com.ciputramitra.ciputramitrahospital.response.category.CategoryResponse
+import com.ciputramitra.ciputramitrahospital.response.categorypoly.CategoryPolyclinicResponse
 import retrofit2.HttpException
 
-class HomeRepositoryImpl(
+class CategoryPolyclinicRepositoryImpl(
     private val apiService: ApiService
-): HomeRepository {
-    override suspend fun fetchCategory(): Result<CategoryResponse> {
+): CategoryPolyclinicRepository {
+    override suspend fun fetchCategoryPolyclinic(): Result<CategoryPolyclinicResponse> {
         return try {
-            val response = apiService.fetchCategory()
+            val response = apiService.fetchCategoryPolyclinic()
             when(response.meta.code == 200) {
                 true -> Result.success(value = response)
                 false -> Result.failure(exception = Exception(response.meta.message))

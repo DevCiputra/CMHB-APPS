@@ -81,7 +81,8 @@ fun LoginScreen(
                         )
 
                         Text(
-                            text = "Explore new features and enjoy seamless healtcare",
+                            modifier = Modifier.padding(start = 5.dp),
+                            text = "Digital health solutions with Ciputra Mitra Hospital's standard of excellence",
                             fontFamily = poppinsMedium,
                             color = Color.Gray,
                             fontSize = 13.sp

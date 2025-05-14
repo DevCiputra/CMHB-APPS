@@ -28,7 +28,7 @@ class AuthRepositoryImpl(
             )
             when(response.meta?.code == 200 && response.data != null) {
                 true -> Result.success(value = response.data)
-                false -> Result.failure(exception = Exception(response.meta?.message ?: "Not found"))
+                false -> Result.failure(exception = Exception(response.meta?.message))
             }
         }
         catch (e: Exception) {
@@ -38,7 +38,7 @@ class AuthRepositoryImpl(
                 }
 
                 e is HttpException && e.code() == 400 -> {
-                    Result.failure(exception =  Exception("Account tidak bisa di akses"))
+                    Result.failure(exception =  Exception("The email has already been taken."))
                 }
                 else -> Result.failure(exception = e)
             }

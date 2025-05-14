@@ -3,6 +3,7 @@ package com.ciputramitra.ciputramitrahospital.domain.remote
 import com.ciputramitra.ciputramitrahospital.response.Wrapper
 import com.ciputramitra.ciputramitrahospital.response.auth.SignResponse
 import com.ciputramitra.ciputramitrahospital.response.category.CategoryResponse
+import com.ciputramitra.ciputramitrahospital.response.categorypoly.CategoryPolyclinicResponse
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -34,4 +35,7 @@ interface ApiService {
 //    CategoryProduct
     @GET("category")
     suspend fun fetchCategory(): CategoryResponse
+
+    @GET("categoryPoly")
+    suspend fun fetchCategoryPolyclinic(): CategoryPolyclinicResponse
 }

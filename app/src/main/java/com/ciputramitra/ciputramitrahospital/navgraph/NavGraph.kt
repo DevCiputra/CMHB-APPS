@@ -32,7 +32,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ciputramitra.ciputramitrahospital.component.bottomNavigation
+import com.ciputramitra.ciputramitrahospital.ui.consultation.ConsultationPatientOnline
+import com.ciputramitra.ciputramitrahospital.ui.consultation.ConsultationViewModel
 import com.ciputramitra.ciputramitrahospital.ui.home.HomeScreen
+import com.ciputramitra.ciputramitrahospital.ui.home.HomeViewModel
 import com.ciputramitra.ciputramitrahospital.ui.info.InfoScreen
 import com.ciputramitra.ciputramitrahospital.ui.profile.ProfileScreen
 import com.ciputramitra.ciputramitrahospital.ui.sign.AuthViewModel
@@ -46,7 +49,9 @@ import com.ciputramitra.ciputramitrahospital.ui.transaction.TransactionScreen
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun NavGraph(
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    homeViewModel: HomeViewModel,
+    consultationViewModel: ConsultationViewModel
 ) {
 
     val isLoggedIn by authViewModel.isLoggedIn.collectAsStateWithLifecycle(initialValue = false)
@@ -78,9 +83,7 @@ fun NavGraph(
         composable<Register> {
             RegisterScreen(
                 onRegisterSuccess = {
-                    navController.navigate(route = Login) {
-                        popUpTo(route = Login) { inclusive = true }
-                    }
+                    navController.navigate(route = Login)
                 },
                 navController = navController,
                 authViewModel = authViewModel
@@ -125,7 +128,7 @@ fun NavGraph(
                                         tint = if (index == selectedItemIndex)
                                             items.selectedIconColor else items.unSelectedIconColor,
                                         contentDescription = items.title,
-                                        modifier = Modifier.size(20.dp)
+                                        modifier = Modifier.size(22.dp)
                                     )
                                 },
                                 colors = NavigationBarItemDefaults.colors(
@@ -144,7 +147,8 @@ fun NavGraph(
                     when (selectedItemIndex) {
                         0 -> HomeScreen(
                             navController = navController,
-                            fetchUser = fetchUser
+                            fetchUser = fetchUser,
+                            homeViewModel = homeViewModel
                         )
 
                         1 -> InfoScreen(
@@ -161,6 +165,17 @@ fun NavGraph(
                     }
                 }
             }
+        }
+
+        composable<ConsultationOnline> {
+            BackHandler {
+                navController.navigateUp()
+            }
+
+            ConsultationPatientOnline(
+                consultationViewModel = consultationViewModel,
+                navController = navController
+            )
         }
     }
 }

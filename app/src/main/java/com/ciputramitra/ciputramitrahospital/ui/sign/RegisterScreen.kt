@@ -1,5 +1,7 @@
 package com.ciputramitra.ciputramitrahospital.ui.sign
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,6 +41,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -63,14 +66,14 @@ import kotlinx.coroutines.tasks.await
 fun RegisterScreen(
     navController: NavController,
     authViewModel: AuthViewModel,
-    onRegisterSuccess: () -> Unit
+    onRegisterSuccess: () -> Unit,
 ) {
     val snackBarHostState = remember {
         SnackbarHostState()
     }
     val validationAuth: ValidationsAuth = viewModel()
     val registerState by authViewModel.authState.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -87,9 +90,10 @@ fun RegisterScreen(
                         verticalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
+                            modifier = Modifier.padding(top = 4.dp),
                             text = "Create an account",
                             fontFamily = poppinsBold,
-                            fontSize = 17.sp,
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black,
                         )
@@ -194,7 +198,7 @@ fun RegisterScreen(
                     onValueChange = {
                         validationAuth.whatsapp = validationAuth.whatsapp.copy(value = it)
                     },
-                    label = "Whatsapp",
+                    label = "Whatsapp dimulau angka 0",
                     error = validationAuth.whatsapp.showError,
                     leadingIcon = Icons.Default.Whatsapp,
                     keyboardType = KeyboardType.Text,
@@ -234,8 +238,8 @@ fun RegisterScreen(
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     shape = RoundedCornerShape(28.dp),
                     onClick = {
-                        FirebaseMessaging.getInstance().token.addOnSuccessListener {
-                            val token = it
+                        FirebaseMessaging.getInstance().token.addOnSuccessListener { token ->
+
                             if (validationAuth.validateForm()) {
                                 authViewModel.register(
                                     name = validationAuth.userName.value,
@@ -250,6 +254,7 @@ fun RegisterScreen(
                                 )
                             }
                         }
+
                     }
                 ) {
                     Text(
@@ -272,6 +277,7 @@ fun RegisterScreen(
                 }
 
                 is StateManagement.RegisterSuccess -> LaunchedEffect(key1 = state) {
+                    Toast.makeText(context, "Silahkan Lanjutkan Login", Toast.LENGTH_LONG).show()
                     onRegisterSuccess()
                 }
 

@@ -26,15 +26,20 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.AssignmentTurnedIn
+import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.HomeRepairService
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.MedicalInformation
 import androidx.compose.material.icons.outlined.MedicalServices
 import androidx.compose.material.icons.outlined.MonetizationOn
 import androidx.compose.material.icons.outlined.StarRate
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.AssignmentTurnedIn
+import androidx.compose.material.icons.rounded.Dns
+import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.MonetizationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
@@ -166,7 +171,7 @@ fun FormCheckBox(
 fun bottomNavigation(): List<BottomNavigationItems> {
     return listOf(
         BottomNavigationItems(
-            title = "Home",
+            title = "Beranda",
             selectedIcon = Icons.Rounded.Home,
             unSelectedIcon = Icons.Outlined.Home,
             selectedIconColor = greenColor,
@@ -177,9 +182,9 @@ fun bottomNavigation(): List<BottomNavigationItems> {
             routeScreen = "/Home"
         ),
         BottomNavigationItems(
-            title = "Information",
-            selectedIcon = Icons.Rounded.AssignmentTurnedIn,
-            unSelectedIcon = Icons.Outlined.AssignmentTurnedIn,
+            title = "Artikel",
+            selectedIcon = Icons.Rounded.Info,
+            unSelectedIcon = Icons.Outlined.Info,
             selectedIconColor = greenColor,
             unSelectedIconColor = Color.Gray,
             selectedColor = Color.Black,
@@ -188,9 +193,9 @@ fun bottomNavigation(): List<BottomNavigationItems> {
             routeScreen = "/Info"
         ),
         BottomNavigationItems(
-            title = "Payment",
-            selectedIcon = Icons.Rounded.MonetizationOn,
-            unSelectedIcon = Icons.Outlined.MonetizationOn,
+            title = "Riwayat",
+            selectedIcon = Icons.Rounded.History,
+            unSelectedIcon = Icons.Outlined.History,
             selectedIconColor = greenColor,
             unSelectedIconColor = Color.Gray,
             selectedColor = Color.Black,
@@ -199,7 +204,7 @@ fun bottomNavigation(): List<BottomNavigationItems> {
             routeScreen = "/Payment"
         ),
         BottomNavigationItems(
-            title = "Profile",
+            title = "Profil",
             selectedIcon = Icons.Rounded.AccountCircle,
             unSelectedIcon = Icons.Outlined.AccountCircle,
             selectedIconColor = greenColor,

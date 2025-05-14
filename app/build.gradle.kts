@@ -142,6 +142,9 @@ dependencies {
     ksp(libs.room.runtime.compiler)
     implementation(libs.room.ktx)
 
+//    Firebase Boom
+    implementation(platform(libs.firebase.boom))
+
 //    Work Manager untuk handling Background Service
     implementation(libs.work.manager.ktx)
 }

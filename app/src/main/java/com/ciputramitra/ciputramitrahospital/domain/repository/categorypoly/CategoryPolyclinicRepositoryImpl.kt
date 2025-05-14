@@ -1,28 +1,26 @@
 package com.ciputramitra.ciputramitrahospital.domain.repository.categorypoly
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.ciputramitra.ciputramitrahospital.domain.remote.ApiService
-import com.ciputramitra.ciputramitrahospital.response.categorypoly.CategoryPolyclinicResponse
-import retrofit2.HttpException
+import com.ciputramitra.ciputramitrahospital.response.categoryPoly.Data
+import kotlinx.coroutines.flow.Flow
 
 class CategoryPolyclinicRepositoryImpl(
     private val apiService: ApiService
 ): CategoryPolyclinicRepository {
-    override suspend fun fetchCategoryPolyclinic(): Result<CategoryPolyclinicResponse> {
-        return try {
-            val response = apiService.fetchCategoryPolyclinic()
-            when(response.meta.code == 200) {
-                true -> Result.success(value = response)
-                false -> Result.failure(exception = Exception(response.meta.message))
-            }
+    override suspend fun fetchCategoryPolyclinic(): Flow<PagingData<Data>> = Pager(
+        config = PagingConfig(
+            pageSize = 10,
+            enablePlaceholders = false,
+            maxSize = 50
+        ),
+        pagingSourceFactory = {
+            PagingSourcePolyclinic(
+                apiService = apiService
+            )
         }
-        catch (e: Exception) {
-            when {
-                e is HttpException && e.code() == 500 -> {
-                    Result.failure(exception =  Exception("Server sedang sibuk"))
-                }
+    ).flow
 
-                else -> Result.failure(exception = e)
-            }
-        }
-    }
 }

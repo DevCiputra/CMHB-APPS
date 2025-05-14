@@ -3,7 +3,6 @@ package com.ciputramitra.ciputramitrahospital.domain.state
 import com.ciputramitra.ciputramitrahospital.response.auth.SignResponse
 import com.ciputramitra.ciputramitrahospital.response.auth.User
 import com.ciputramitra.ciputramitrahospital.response.category.CategoryResponse
-import com.ciputramitra.ciputramitrahospital.response.categorypoly.CategoryPolyclinicResponse
 
 sealed class StateManagement {
     data object Idle: StateManagement()
@@ -19,10 +18,5 @@ sealed class StateManagement {
 //    Home
     data class HomeSuccess(
         val categoryResponse: CategoryResponse
-    ): StateManagement()
-
-//   Category Polyclinic
-    data class CategoryPolyclinicSuccess(
-        val categoryPolyclinicResponse: CategoryPolyclinicResponse
     ): StateManagement()
 }

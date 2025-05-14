@@ -1,4 +1,4 @@
-package com.ciputramitra.ciputramitrahospital.response.categorypoly
+package com.ciputramitra.ciputramitrahospital.response.categoryPoly
 
 
 import com.google.gson.annotations.SerializedName

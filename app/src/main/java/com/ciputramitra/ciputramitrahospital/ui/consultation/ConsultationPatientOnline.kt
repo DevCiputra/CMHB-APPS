@@ -1,6 +1,5 @@
 package com.ciputramitra.ciputramitrahospital.ui.consultation
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleLeft
@@ -25,7 +23,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,14 +35,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ciputramitra.ciputramitrahospital.R
+import com.ciputramitra.ciputramitrahospital.component.InformationBusy
 import com.ciputramitra.ciputramitrahospital.component.LoadingLottieAnimation
-import com.ciputramitra.ciputramitrahospital.domain.state.StateManagement
-import com.ciputramitra.ciputramitrahospital.response.categorypoly.Data
+import com.ciputramitra.ciputramitrahospital.response.categoryPoly.Data
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsLight
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsMedium
 import com.ciputramitra.ciputramitrahospital.ui.theme.whiteCustom
@@ -57,8 +57,7 @@ fun ConsultationPatientOnline(
     navController: NavController
 ) {
 
-    val categoryPolyclinicState by consultationViewModel.categoryPolyclinic.collectAsStateWithLifecycle()
-    val context = LocalContext.current
+    val categoryPolyclinic = consultationViewModel.categoryPolyclinic.collectAsLazyPagingItems()
 
     LaunchedEffect(key1 = Unit) {
         consultationViewModel.fetchCategoryPolyclinic()
@@ -130,25 +129,33 @@ fun ConsultationPatientOnline(
             }
         }
 
-        when(val state = categoryPolyclinicState) {
-            is StateManagement.Loading -> item { LoadingLottieAnimation() }
-            is StateManagement.Error -> Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
-            is StateManagement.CategoryPolyclinicSuccess -> {
-                item {
-                    CategoryPolyclinic(
-                        dataCategoryPolyclinic = state.categoryPolyclinicResponse.data,
+        item {
+            CategoryPolyclinic(
+                categoryPolyclinic = categoryPolyclinic,
+            )
+        }
+
+        categoryPolyclinic.apply {
+            when {
+                loadState.refresh is LoadState.Loading || loadState.append is LoadState.Loading -> item {
+                    LoadingLottieAnimation()
+                }
+
+                loadState.refresh is LoadState.Error || loadState.append is LoadState.Error -> item {
+                    InformationBusy(
+                        message = "Mohon maaf server sedang sibuk" ,
+                        onRetryClick = { retry() }
                     )
                 }
             }
-
-            else -> consultationViewModel.clearCategoryPolyclinicState()
         }
+
     }
 
 }
 
 @Composable
-fun CategoryPolyclinic(dataCategoryPolyclinic: List<Data>) {
+fun CategoryPolyclinic(categoryPolyclinic: LazyPagingItems<Data>) {
     val context = LocalContext.current
     LazyVerticalGrid(
         columns = GridCells.Fixed(4),
@@ -159,36 +166,43 @@ fun CategoryPolyclinic(dataCategoryPolyclinic: List<Data>) {
             .heightIn(min = 300.dp, max = 800.dp)
     ) {
 
-        items(dataCategoryPolyclinic) { categoryPolyclinic ->
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(context = context)
-                        .data(categoryPolyclinic.imageCategoryPoly)
-                        .error(R.drawable.logo)
-                        .build(),
-                    contentDescription = null,
+        items(
+            count = categoryPolyclinic.itemCount,
+            key = categoryPolyclinic.itemKey { it.id}
+        ) {
+            val categoryPolyclinics = categoryPolyclinic[it]
+            categoryPolyclinics?.let { categoriesPolyclinicItems ->
+                Column(
                     modifier = Modifier
-                        .size(width = 30.dp, height = 30.dp)
-                        .clip(shape = RoundedCornerShape(16.dp)),
-                    contentScale = ContentScale.Crop
-                )
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(context = context)
+                            .data(categoriesPolyclinicItems.imageCategoryPoly)
+                            .error(R.drawable.logo)
+                            .build(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(width = 30.dp, height = 30.dp)
+                            .clip(shape = RoundedCornerShape(16.dp)),
+                        contentScale = ContentScale.Crop
+                    )
 
-                Text(
-                    textAlign = TextAlign.Center,
-                    text = categoryPolyclinic.categoryPolyclinic,
-                    fontFamily = poppinsLight,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 11.sp,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
+                    Text(
+                        textAlign = TextAlign.Center,
+                        text = categoriesPolyclinicItems.categoryPolyclinic,
+                        fontFamily = poppinsLight,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 11.sp,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
+
         }
     }
 }

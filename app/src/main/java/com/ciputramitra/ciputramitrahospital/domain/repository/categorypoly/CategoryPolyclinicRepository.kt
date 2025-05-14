@@ -1,7 +1,10 @@
 package com.ciputramitra.ciputramitrahospital.domain.repository.categorypoly
 
-import com.ciputramitra.ciputramitrahospital.response.categorypoly.CategoryPolyclinicResponse
+import androidx.paging.PagingData
+import com.ciputramitra.ciputramitrahospital.response.categoryPoly.Data
+import kotlinx.coroutines.flow.Flow
+
 
 interface CategoryPolyclinicRepository {
-    suspend fun fetchCategoryPolyclinic(): Result<CategoryPolyclinicResponse>
+    suspend fun fetchCategoryPolyclinic(): Flow<PagingData<Data>>
 }

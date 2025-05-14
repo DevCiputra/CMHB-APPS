@@ -3,11 +3,12 @@ package com.ciputramitra.ciputramitrahospital.domain.remote
 import com.ciputramitra.ciputramitrahospital.response.Wrapper
 import com.ciputramitra.ciputramitrahospital.response.auth.SignResponse
 import com.ciputramitra.ciputramitrahospital.response.category.CategoryResponse
-import com.ciputramitra.ciputramitrahospital.response.categorypoly.CategoryPolyclinicResponse
+import com.ciputramitra.ciputramitrahospital.response.categoryPoly.CategoryPolyclinicResponse
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ApiService {
     @FormUrlEncoded
@@ -37,5 +38,7 @@ interface ApiService {
     suspend fun fetchCategory(): CategoryResponse
 
     @GET("categoryPoly")
-    suspend fun fetchCategoryPolyclinic(): CategoryPolyclinicResponse
+    suspend fun fetchCategoryPolyclinic(
+        @Query("page") page: Int,
+    ): Wrapper<CategoryPolyclinicResponse>
 }

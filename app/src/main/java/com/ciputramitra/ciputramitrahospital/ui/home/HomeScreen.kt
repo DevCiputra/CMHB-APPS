@@ -1,6 +1,6 @@
 package com.ciputramitra.ciputramitrahospital.ui.home
 
-import android.widget.Toast
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -61,8 +61,8 @@ import com.ciputramitra.ciputramitrahospital.component.PageIndicator
 import com.ciputramitra.ciputramitrahospital.domain.state.StateManagement
 import com.ciputramitra.ciputramitrahospital.navgraph.ConsultationOnline
 import com.ciputramitra.ciputramitrahospital.response.auth.User
-import com.ciputramitra.ciputramitrahospital.response.category.Category
-import com.ciputramitra.ciputramitrahospital.ui.consultation.ConsultationViewModel
+import com.ciputramitra.ciputramitrahospital.response.category.Data
+import com.ciputramitra.ciputramitrahospital.ui.theme.Pink
 import com.ciputramitra.ciputramitrahospital.ui.theme.greenColor
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsMedium
 import com.ciputramitra.ciputramitrahospital.ui.theme.whiteCustom
@@ -85,8 +85,8 @@ fun HomeScreen(
 
 
     val context = LocalContext.current
-
     LaunchedEffect(key1 = Unit) {
+        // TAMBAHKAN INI - fetchCategory() harus dipanggil saat HomeScreen di-compose pertama kali
         homeViewModel.fetchCategory()
         while (true) {
             delay(3000)
@@ -285,7 +285,24 @@ fun HomeScreen(
         when(val state = homeState) {
             is StateManagement.Loading -> item { LoadingLottieAnimation() }
 
-            is StateManagement.Error -> Toast.makeText(context, "Server sedang sibuk", Toast.LENGTH_SHORT).show()
+            is StateManagement.Error ->  item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("Gagal memuat kategori")
+                    Text(
+                        text = "Coba lagi",
+                        modifier = Modifier
+                            .clickable { homeViewModel.fetchCategory() }
+                            .padding(8.dp),
+                        color = greenColor,
+                        fontFamily = poppinsMedium
+                    )
+                }
+            }
 
             is StateManagement.HomeSuccess -> {
                 item {
@@ -341,7 +358,7 @@ fun HomeScreen(
 }
 
 @Composable
-fun CategoryScreen(dataCategory: List<Category>, navController: NavController) {
+fun CategoryScreen(dataCategory: List<Data>, navController: NavController) {
     val context = LocalContext.current
     LazyVerticalGrid(
         modifier = Modifier
@@ -360,24 +377,61 @@ fun CategoryScreen(dataCategory: List<Category>, navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                AsyncImage(
-                    modifier = Modifier
-                        .size(33.dp)
-                        .clip(shape = CircleShape)
-                        .clickable {
-                            when (itemCategory.id) {
-                                1 -> {
-                                    navController.navigate(route = ConsultationOnline)
+                // Menggunakan BadgedBox untuk menambahkan badge
+                BadgedBox(
+                    badge = {
+                        when (itemCategory.id) {
+                            1 -> {
+                                Badge(
+                                    containerColor = greenColor,
+                                    contentColor = Color.White,
+                                    modifier = Modifier.offset(x = 3.dp, y = 3.dp)
+                                ) {
+                                    Text(
+                                        text = "new",
+                                        fontSize = 6.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(horizontal = 2.dp)
+                                    )
                                 }
                             }
-                        },
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    model = ImageRequest.Builder(context = context)
-                        .data(itemCategory.imageCategory)
-                        .error(R.drawable.logo)
-                        .build()
-                )
+                            2, 3, 4 -> {
+                                Badge(
+                                    containerColor = Pink, // Orange color
+                                    contentColor = Color.White,
+                                    modifier = Modifier.offset(x = 3.dp, y = 3.dp)
+                                ) {
+                                    Text(
+                                        text = "coming",
+                                        fontSize = 6.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(horizontal = 2.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    // AsyncImage yang akan mendapat badge
+                    AsyncImage(
+                        modifier = Modifier
+                            .size(33.dp)
+                            .clip(shape = CircleShape)
+                            .clickable {
+                                when (itemCategory.id) {
+                                    1 -> {
+                                        navController.navigate(route = ConsultationOnline)
+                                    }
+                                }
+                            },
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        model = ImageRequest.Builder(context = context)
+                            .data(itemCategory.imageCategory)
+                            .error(R.drawable.logo)
+                            .build()
+                    )
+                }
 
                 Text(
                     text = itemCategory.nameCategory,

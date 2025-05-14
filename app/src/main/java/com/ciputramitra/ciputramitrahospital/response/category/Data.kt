@@ -3,7 +3,7 @@ package com.ciputramitra.ciputramitrahospital.response.category
 
 import com.google.gson.annotations.SerializedName
 
-data class Category(
+data class Data(
     @SerializedName("created_at")
     val createdAt: String,
     @SerializedName("id")

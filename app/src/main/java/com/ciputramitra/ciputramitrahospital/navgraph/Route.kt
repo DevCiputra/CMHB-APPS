@@ -9,6 +9,9 @@ object Login
 object Register
 
 @Serializable
+object Authentication
+
+@Serializable
 object Home
 
 @Serializable

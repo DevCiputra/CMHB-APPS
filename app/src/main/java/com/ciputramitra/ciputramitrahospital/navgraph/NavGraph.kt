@@ -39,6 +39,7 @@ import com.ciputramitra.ciputramitrahospital.ui.home.HomeViewModel
 import com.ciputramitra.ciputramitrahospital.ui.info.InfoScreen
 import com.ciputramitra.ciputramitrahospital.ui.profile.ProfileScreen
 import com.ciputramitra.ciputramitrahospital.ui.sign.AuthViewModel
+import com.ciputramitra.ciputramitrahospital.ui.sign.AuthenticationFace
 import com.ciputramitra.ciputramitrahospital.ui.sign.LoginScreen
 import com.ciputramitra.ciputramitrahospital.ui.sign.RegisterScreen
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsMedium
@@ -62,15 +63,16 @@ fun NavGraph(
     var selectedItemIndex by rememberSaveable { mutableIntStateOf(value = 0) }
     val context = LocalContext.current
 
+
     NavHost(
         navController =  navController,
-        startDestination = if (isLoggedIn && token != null) Home else Login
+        startDestination = if (isLoggedIn && token != null) Authentication else Login
     ) {
         composable<Login> {
             LoginScreen(
                 onLoginSuccess = {
                     if (token != null)
-                        navController.navigate(route = Home) {
+                        navController.navigate(route = Authentication) {
                             popUpTo(route = Login) { inclusive = true }
                         }
                 },
@@ -79,11 +81,20 @@ fun NavGraph(
             )
         }
 
+        composable<Authentication> {
+            AuthenticationFace(
+                navController = navController,
+                homeViewModel = homeViewModel
+            )
+        }
 
         composable<Register> {
             RegisterScreen(
                 onRegisterSuccess = {
-                    navController.navigate(route = Login)
+                    if (token != null)
+                        navController.navigate(route = Authentication) {
+                            popUpTo(route = Login) { inclusive = true }
+                        }
                 },
                 navController = navController,
                 authViewModel = authViewModel

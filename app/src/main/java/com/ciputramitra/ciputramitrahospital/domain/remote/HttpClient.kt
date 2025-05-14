@@ -15,10 +15,7 @@ class HttpClient(private val dataStoreManager: DataStoreManager) {
     private var apiService: ApiService? = null
 
     init {
-        runBlocking {
-            val token = dataStoreManager.tokenFlow.first()
-            buildRetrofitClient(token)
-        }
+        buildRetrofitClient()
     }
 
     fun getApi(): ApiService? {
@@ -28,7 +25,13 @@ class HttpClient(private val dataStoreManager: DataStoreManager) {
         return apiService
     }
 
-    private fun buildRetrofitClient(token: String?) {
+    // Funsi untuk rebuild client secara eksplisit jika diperlukan
+    fun rebuildClient() {
+        buildRetrofitClient()
+        apiService = retrofit?.create(ApiService::class.java)
+    }
+
+    private fun buildRetrofitClient() {
         val clientBuilder = OkHttpClient.Builder()
             .connectTimeout(20, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
@@ -40,13 +43,17 @@ class HttpClient(private val dataStoreManager: DataStoreManager) {
             })
         }
 
-        token?.let {
-            clientBuilder.addInterceptor { chain ->
-                val request = chain.request().newBuilder()
-                    .addHeader("Authorization", "Bearer $token")
-                    .build()
-                chain.proceed(request)
-            }
+        // Gunakan interceptor yang selalu mengambil token terbaru
+        clientBuilder.addInterceptor { chain ->
+            val currentToken = runBlocking { dataStoreManager.tokenFlow.first() }
+            val request = chain.request().newBuilder()
+                .apply {
+                    if (!currentToken.isNullOrEmpty()) {
+                        addHeader("Authorization", "Bearer $currentToken")
+                    }
+                }
+                .build()
+            chain.proceed(request)
         }
 
         retrofit = Retrofit.Builder()
@@ -54,6 +61,5 @@ class HttpClient(private val dataStoreManager: DataStoreManager) {
             .client(clientBuilder.build())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-
     }
 }

@@ -27,7 +27,7 @@ val AppModule = module {
     //    Authentication
     single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
     factory { AuthUseCase(get()) }
-    viewModel { AuthViewModel(get()) }
+    viewModel { AuthViewModel(get(), get()) }
 
 //    Home
     single<HomeRepository> { HomeRepositoryImpl(get()) }

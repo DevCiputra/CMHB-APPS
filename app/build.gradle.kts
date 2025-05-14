@@ -147,4 +147,7 @@ dependencies {
 
 //    Work Manager untuk handling Background Service
     implementation(libs.work.manager.ktx)
+
+//    Biometric
+    implementation(libs.biometric.face)
 }

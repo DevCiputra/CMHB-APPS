@@ -34,7 +34,7 @@ class HomeViewModel(
         }
     }
 
-    private fun combineState() {
+    fun combineState() {
         val categories = cacheCategory
         if (categories != null) {
             _homeState.value = StateManagement.HomeSuccess(

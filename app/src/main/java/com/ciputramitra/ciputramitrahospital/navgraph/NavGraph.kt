@@ -18,6 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -31,9 +33,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.ciputramitra.ciputramitrahospital.AuthenticatedScreen
+import com.ciputramitra.ciputramitrahospital.biometrics.BiometricScreen
 import com.ciputramitra.ciputramitrahospital.component.bottomNavigation
 import com.ciputramitra.ciputramitrahospital.ui.consultation.ConsultationPatientOnline
 import com.ciputramitra.ciputramitrahospital.ui.consultation.ConsultationViewModel
+import com.ciputramitra.ciputramitrahospital.ui.doctorall.DoctorAllScreen
+import com.ciputramitra.ciputramitrahospital.ui.doctorall.DoctorAllViewModel
 import com.ciputramitra.ciputramitrahospital.ui.home.HomeScreen
 import com.ciputramitra.ciputramitrahospital.ui.home.HomeViewModel
 import com.ciputramitra.ciputramitrahospital.ui.info.InfoScreen
@@ -52,7 +59,8 @@ import com.ciputramitra.ciputramitrahospital.ui.transaction.TransactionScreen
 fun NavGraph(
     authViewModel: AuthViewModel,
     homeViewModel: HomeViewModel,
-    consultationViewModel: ConsultationViewModel
+    consultationViewModel: ConsultationViewModel,
+    doctorAllViewModel: DoctorAllViewModel,
 ) {
 
     val isLoggedIn by authViewModel.isLoggedIn.collectAsStateWithLifecycle(initialValue = false)
@@ -63,16 +71,18 @@ fun NavGraph(
     var selectedItemIndex by rememberSaveable { mutableIntStateOf(value = 0) }
     val context = LocalContext.current
 
+    var isAuthenticated by remember { mutableStateOf(false) }
+
 
     NavHost(
         navController =  navController,
-        startDestination = if (isLoggedIn && token != null) Authentication else Login
+        startDestination = if (isLoggedIn && token != null) Home else Login
     ) {
         composable<Login> {
             LoginScreen(
                 onLoginSuccess = {
                     if (token != null)
-                        navController.navigate(route = Authentication) {
+                        navController.navigate(route = Home) {
                             popUpTo(route = Login) { inclusive = true }
                         }
                 },
@@ -92,7 +102,7 @@ fun NavGraph(
             RegisterScreen(
                 onRegisterSuccess = {
                     if (token != null)
-                        navController.navigate(route = Authentication) {
+                        navController.navigate(route = Home) {
                             popUpTo(route = Login) { inclusive = true }
                         }
                 },
@@ -185,8 +195,36 @@ fun NavGraph(
 
             ConsultationPatientOnline(
                 consultationViewModel = consultationViewModel,
-                navController = navController
+                navController = navController,
             )
+        }
+
+        composable<DoctorAll> {
+            BackHandler {
+                navController.navigateUp()
+            }
+
+            val args = it.toRoute<DoctorAll>()
+            DoctorAllScreen(
+                doctorAllViewModel = doctorAllViewModel,
+                navController = navController,
+                categoryPolyclinicID = args.categoryPolyclinicID,
+                nameCategoryPolyclinic = args.nameCategoryPolyclinic,
+            )
+        }
+
+        composable<Biometric> {
+            if (isAuthenticated) {
+                // Show authenticated content
+                AuthenticatedScreen()
+            } else {
+                // Show biometric authentication screen
+                BiometricScreen(
+                    onAuthenticated = {
+                        isAuthenticated = true
+                    }
+                )
+            }
         }
     }
 }

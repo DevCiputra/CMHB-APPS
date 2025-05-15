@@ -1,8 +1,10 @@
 package com.ciputramitra.ciputramitrahospital.ui.consultation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -34,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.paging.LoadState
@@ -45,6 +48,7 @@ import coil.request.ImageRequest
 import com.ciputramitra.ciputramitrahospital.R
 import com.ciputramitra.ciputramitrahospital.component.InformationBusy
 import com.ciputramitra.ciputramitrahospital.component.LoadingLottieAnimation
+import com.ciputramitra.ciputramitrahospital.navgraph.DoctorAll
 import com.ciputramitra.ciputramitrahospital.response.categoryPoly.Data
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsLight
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsMedium
@@ -132,6 +136,7 @@ fun ConsultationPatientOnline(
         item {
             CategoryPolyclinic(
                 categoryPolyclinic = categoryPolyclinic,
+                navController = navController
             )
         }
 
@@ -155,14 +160,15 @@ fun ConsultationPatientOnline(
 }
 
 @Composable
-fun CategoryPolyclinic(categoryPolyclinic: LazyPagingItems<Data>) {
+fun CategoryPolyclinic(categoryPolyclinic: LazyPagingItems<Data>, navController: NavController) {
     val context = LocalContext.current
     LazyVerticalGrid(
-        columns = GridCells.Fixed(4),
+        columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
             .fillMaxWidth()
+            .padding(start = 12.dp, end = 12.dp, bottom = 16.dp)
             .heightIn(min = 300.dp, max = 800.dp)
     ) {
 
@@ -172,12 +178,20 @@ fun CategoryPolyclinic(categoryPolyclinic: LazyPagingItems<Data>) {
         ) {
             val categoryPolyclinics = categoryPolyclinic[it]
             categoryPolyclinics?.let { categoriesPolyclinicItems ->
-                Column(
+                Row (
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .padding(12.dp)
+                        .clickable {
+                            navController.navigate(
+                                route = DoctorAll(
+                                categoryPolyclinicID = categoryPolyclinics.id,
+                                nameCategoryPolyclinic = categoryPolyclinics.categoryPolyclinic,
+                                )
+                            )
+                        },
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(context = context)
@@ -192,12 +206,13 @@ fun CategoryPolyclinic(categoryPolyclinic: LazyPagingItems<Data>) {
                     )
 
                     Text(
-                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(start = 5.dp),
+                        textAlign = TextAlign.Start,
                         text = categoriesPolyclinicItems.categoryPolyclinic,
                         fontFamily = poppinsLight,
                         fontWeight = FontWeight.Normal,
-                        fontSize = 11.sp,
-                        maxLines = 2,
+                        fontSize = 13.sp,
+                        maxLines = 3,
                         overflow = TextOverflow.Ellipsis
                     )
                 }

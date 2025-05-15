@@ -6,12 +6,16 @@ import com.ciputramitra.ciputramitrahospital.domain.repository.AuthRepository
 import com.ciputramitra.ciputramitrahospital.domain.repository.AuthRepositoryImpl
 import com.ciputramitra.ciputramitrahospital.domain.repository.categorypoly.CategoryPolyclinicRepository
 import com.ciputramitra.ciputramitrahospital.domain.repository.categorypoly.CategoryPolyclinicRepositoryImpl
+import com.ciputramitra.ciputramitrahospital.domain.repository.doctorall.DoctorAllRepository
+import com.ciputramitra.ciputramitrahospital.domain.repository.doctorall.DoctorAllRepositoryImpl
 import com.ciputramitra.ciputramitrahospital.domain.repository.home.HomeRepository
 import com.ciputramitra.ciputramitrahospital.domain.repository.home.HomeRepositoryImpl
 import com.ciputramitra.ciputramitrahospital.domain.usecase.AuthUseCase
 import com.ciputramitra.ciputramitrahospital.domain.usecase.CategoryPolyclinicUseCase
+import com.ciputramitra.ciputramitrahospital.domain.usecase.DoctorAllUseCase
 import com.ciputramitra.ciputramitrahospital.domain.usecase.HomeUseCase
 import com.ciputramitra.ciputramitrahospital.ui.consultation.ConsultationViewModel
+import com.ciputramitra.ciputramitrahospital.ui.doctorall.DoctorAllViewModel
 import com.ciputramitra.ciputramitrahospital.ui.home.HomeViewModel
 import com.ciputramitra.ciputramitrahospital.ui.sign.AuthViewModel
 import org.koin.android.ext.koin.androidContext
@@ -32,11 +36,17 @@ val AppModule = module {
 //    Home
     single<HomeRepository> { HomeRepositoryImpl(get()) }
     factory { HomeUseCase(get()) }
-    viewModel { HomeViewModel(get()) }
+    viewModel { HomeViewModel(get(), get()) }
 
 
 //    CategoryPolyclinic
     single<CategoryPolyclinicRepository> { CategoryPolyclinicRepositoryImpl(get()) }
     factory { CategoryPolyclinicUseCase(get()) }
     viewModel { ConsultationViewModel(get()) }
+
+//    DoctorALL
+    single<DoctorAllRepository> { DoctorAllRepositoryImpl(get()) }
+    factory { DoctorAllUseCase(get()) }
+    viewModel { DoctorAllViewModel(get())}
+
 }

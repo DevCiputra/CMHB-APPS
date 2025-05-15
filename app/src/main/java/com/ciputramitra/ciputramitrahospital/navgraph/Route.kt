@@ -15,15 +15,17 @@ object Authentication
 object Home
 
 @Serializable
+object Biometric
+
+@Serializable
 object ConsultationOnline
 
 @Serializable
-data class CategoryPolyclinicArgs(
-    val categoryPolyclinicID : Int
+data class DoctorAll(
+    val categoryPolyclinicID : Int,
+    val nameCategoryPolyclinic: String,
 )
 
-@Serializable
-object ProductAll
 
 @Serializable
 data class DetailProductArgs(

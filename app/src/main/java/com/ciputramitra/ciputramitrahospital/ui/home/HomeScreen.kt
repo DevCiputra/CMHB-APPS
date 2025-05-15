@@ -1,6 +1,5 @@
 package com.ciputramitra.ciputramitrahospital.ui.home
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -56,14 +55,17 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ciputramitra.ciputramitrahospital.R
+import com.ciputramitra.ciputramitrahospital.biometrics.BiometricScreen
 import com.ciputramitra.ciputramitrahospital.component.LoadingLottieAnimation
 import com.ciputramitra.ciputramitrahospital.component.PageIndicator
 import com.ciputramitra.ciputramitrahospital.domain.state.StateManagement
+import com.ciputramitra.ciputramitrahospital.navgraph.Biometric
 import com.ciputramitra.ciputramitrahospital.navgraph.ConsultationOnline
 import com.ciputramitra.ciputramitrahospital.response.auth.User
 import com.ciputramitra.ciputramitrahospital.response.category.Data
 import com.ciputramitra.ciputramitrahospital.ui.theme.Pink
 import com.ciputramitra.ciputramitrahospital.ui.theme.greenColor
+import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsLight
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsMedium
 import com.ciputramitra.ciputramitrahospital.ui.theme.whiteCustom
 import kotlinx.coroutines.delay
@@ -107,102 +109,108 @@ fun HomeScreen(
 
     LazyColumn(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(color = Color.White),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         stickyHeader {
-
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = 16.dp, top = 12.dp, end = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start,
-            ) {
-
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(fetchUser?.avatar ?: "")
-                        .error(R.drawable.hoodie_man_profile)
-                        .fallback(R.drawable.hoodie_man_profile)
-                        .build(),
-                    contentDescription = "image_profile",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(45.dp)
-                        .clip(shape = CircleShape)
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(start = 16.dp, top = 8.dp, end = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(1.dp),
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Text(
-                            text = "Hi!",
-                            fontSize = 19.sp,
-                            fontFamily = poppinsMedium,
-                            color = Color.Black
-                        )
-
-                        Text(
-                            modifier = Modifier
-                                .padding(start = 2.dp),
-                            text = fetchUser?.name?.uppercase() ?: "Hoodie man",
-                            fontSize = 13.sp,
-                            fontFamily = poppinsMedium,
-                            color = Color.Gray,
-                            overflow = TextOverflow.Ellipsis
-                        )
-
-                    }
-
-                    BadgedBox(
-                        badge = {
-                            Badge(
-                                modifier = Modifier.offset(x = (- 7).dp , y = 1.dp),
-                                content = {
-                                    Text(
-                                        text = "0",
-                                        fontSize = 10.sp ,
-                                        fontFamily = poppinsMedium
-                                    )
-                                }
-                            )
-                        }
-                    ) {
-                        IconButton(
-                            onClick = {
-//                            onClickCart()
-                            }
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(30.dp),
-                                imageVector = Icons.Default.CircleNotifications,
-                                contentDescription = null
-                            )
-                        }
-
-                    }
-                }
-
-            }
-        }
-
-        item {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = Color.White)
-                    .padding(start = 14.dp, end = 14.dp, top = 4.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 16.dp, top = 12.dp, end = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start,
+                ) {
+
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(fetchUser?.avatar ?: "")
+                            .error(R.drawable.hoodie_man_profile)
+                            .fallback(R.drawable.hoodie_man_profile)
+                            .build(),
+                        contentDescription = "image_profile",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(45.dp)
+                            .clip(shape = CircleShape)
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(start = 16.dp, top = 8.dp, end = 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(1.dp),
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Text(
+                                text = "Hi!",
+                                fontSize = 19.sp,
+                                fontFamily = poppinsMedium,
+                                color = Color.Black
+                            )
+
+                            Text(
+                                modifier = Modifier
+                                    .padding(start = 2.dp),
+                                text = fetchUser?.name?.uppercase() ?: "Hoodie man",
+                                fontSize = 13.sp,
+                                fontFamily = poppinsMedium,
+                                color = Color.Gray,
+                                overflow = TextOverflow.Ellipsis
+                            )
+
+                        }
+
+                        BadgedBox(
+                            badge = {
+                                Badge(
+                                    modifier = Modifier.offset(x = (- 7).dp , y = 1.dp),
+                                    content = {
+                                        Text(
+                                            text = "0",
+                                            fontSize = 10.sp ,
+                                            fontFamily = poppinsMedium
+                                        )
+                                    }
+                                )
+                            }
+                        ) {
+                            IconButton(
+                                onClick = {
+//                            onClickCart()
+                                }
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(30.dp),
+                                    imageVector = Icons.Default.CircleNotifications,
+                                    contentDescription = null
+                                )
+                            }
+
+                        }
+                    }
+
+                }
+
+            }
+
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.White)
+                    .padding(start = 14.dp, end = 14.dp, top = 18.dp, bottom = 8.dp)
             ) {
                 Row(
                     modifier = Modifier
@@ -218,7 +226,7 @@ fun HomeScreen(
                             .clickable {
 //                            onClick()
                             },
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(14.dp),
                         colors = CardDefaults.outlinedCardColors(containerColor = Color.White),
                         border = BorderStroke(width = 1.dp, color = Color.LightGray)
                     ) {
@@ -245,7 +253,13 @@ fun HomeScreen(
 
                 }
             }
+
+            HorizontalDivider(
+                thickness = 2.dp,
+                color = whiteCustom
+            )
         }
+
 
         item {
             HorizontalPager(
@@ -326,20 +340,32 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            text = "Dokter populer",
-                            fontFamily = poppinsMedium,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 19.sp,
-                            color = Color.Black
-                        )
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(3.dp),
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Text(
+                                text = "Rekomendasi Dokter",
+                                fontFamily = poppinsMedium,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 19.sp,
+                                color = Color.Black
+                            )
+
+                            Text(
+                                text = "Konsultasi online dengan dokter kami",
+                                fontFamily = poppinsLight,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 10.sp,
+                                color = Color.Black
+                            )
+                        }
+
 
                         Text(
                             modifier = Modifier
                                 .clickable {
-//                            navController.navigate(
-//                                route = ProductAll
-//                            )
+                                    navController.navigate(route = Biometric)
                                 },
                             text = "Lihat semua",
                             fontFamily = poppinsMedium,
@@ -348,6 +374,7 @@ fun HomeScreen(
                         )
                     }
                 }
+
             }
 
             else -> homeViewModel.clearHomeState()
@@ -356,6 +383,9 @@ fun HomeScreen(
 
     }
 }
+
+
+
 
 @Composable
 fun CategoryScreen(dataCategory: List<Data>, navController: NavController) {

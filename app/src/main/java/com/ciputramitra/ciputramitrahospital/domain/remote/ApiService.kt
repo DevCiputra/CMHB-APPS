@@ -4,6 +4,7 @@ import com.ciputramitra.ciputramitrahospital.response.Wrapper
 import com.ciputramitra.ciputramitrahospital.response.auth.SignResponse
 import com.ciputramitra.ciputramitrahospital.response.category.CategoryResponse
 import com.ciputramitra.ciputramitrahospital.response.categoryPoly.CategoryPolyclinicResponse
+import com.ciputramitra.ciputramitrahospital.response.doctorall.DoctorAllResponse
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -41,4 +42,18 @@ interface ApiService {
     suspend fun fetchCategoryPolyclinic(
         @Query("page") page: Int,
     ): Wrapper<CategoryPolyclinicResponse>
+
+
+    @GET("FetchDokterProfile")
+    suspend fun fetchDoctorAll(
+        @Query("page") page: Int,
+        @Query("spesialis_name") specialName: String,
+        @Query("category_polyclinic_id") categoryPolyclinicID: Int,
+        @Query("cheap") cheap: String,
+        @Query("expensive") expensive: String,
+        @Query("konsultasi") consultationStatus: String,
+        @Query("reservasi") reservationStatus: String,
+        @Query("status_dokter") statusDoctor: String,
+    ) : Wrapper<DoctorAllResponse>
+
 }

@@ -8,19 +8,34 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.ciputramitra.ciputramitrahospital.navgraph.NavGraph
 import com.ciputramitra.ciputramitrahospital.ui.consultation.ConsultationViewModel
+import com.ciputramitra.ciputramitrahospital.ui.doctorall.DoctorAllViewModel
 import com.ciputramitra.ciputramitrahospital.ui.home.HomeViewModel
 import com.ciputramitra.ciputramitrahospital.ui.sign.AuthViewModel
+import com.ciputramitra.ciputramitrahospital.ui.theme.greenColor
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
     private val splashViewModel by viewModels<SplashViewModel>()
     private val authViewModel: AuthViewModel by viewModel()
     private val homeViewModel: HomeViewModel by viewModel()
+    private val doctorAllViewModel: DoctorAllViewModel by viewModel()
     private val consultationViewModel: ConsultationViewModel by viewModel()
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +51,8 @@ class MainActivity : ComponentActivity() {
             NavGraph(
                 authViewModel = authViewModel,
                 homeViewModel = homeViewModel,
-                consultationViewModel = consultationViewModel
+                consultationViewModel = consultationViewModel,
+                doctorAllViewModel = doctorAllViewModel
             )
         }
     }
@@ -56,5 +72,28 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun AuthenticatedScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Welcome to Secure Area",
+            fontSize = 24.sp,
+            color = greenColor
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "You have successfully authenticated with biometrics!",
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            fontSize = 16.sp
+        )
     }
 }

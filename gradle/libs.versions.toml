@@ -48,7 +48,7 @@ navigationCompose = "2.9.0"
 splashscreen = "1.0.1"
 
 #Biometric
-biometric = "1.4.0-alpha02"
+biometric = "1.2.0-alpha05"
 
 #Coil Image
 coil = "2.7.0"
@@ -161,7 +161,7 @@ firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging
 firebase-boom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBoom"}
 
 #Biometric
-biometric-face = {group = "androidx.biometric", name = "biometric-ktx", version.ref = "biometric"}
+biometric-face = {group = "androidx.biometric", name = "biometric", version.ref = "biometric"}
 
 # Work Manager
 work-manager-ktx = {group = "androidx.work", name = "work-runtime-ktx", version.ref = "work"}

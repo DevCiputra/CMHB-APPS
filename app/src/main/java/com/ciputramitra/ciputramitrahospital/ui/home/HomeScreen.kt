@@ -55,11 +55,9 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ciputramitra.ciputramitrahospital.R
-import com.ciputramitra.ciputramitrahospital.biometrics.BiometricScreen
 import com.ciputramitra.ciputramitrahospital.component.LoadingLottieAnimation
 import com.ciputramitra.ciputramitrahospital.component.PageIndicator
 import com.ciputramitra.ciputramitrahospital.domain.state.StateManagement
-import com.ciputramitra.ciputramitrahospital.navgraph.Biometric
 import com.ciputramitra.ciputramitrahospital.navgraph.ConsultationOnline
 import com.ciputramitra.ciputramitrahospital.response.auth.User
 import com.ciputramitra.ciputramitrahospital.response.category.Data
@@ -363,10 +361,7 @@ fun HomeScreen(
 
 
                         Text(
-                            modifier = Modifier
-                                .clickable {
-                                    navController.navigate(route = Biometric)
-                                },
+                            modifier = Modifier,
                             text = "Lihat semua",
                             fontFamily = poppinsMedium,
                             fontWeight = FontWeight.Medium,

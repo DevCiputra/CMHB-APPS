@@ -34,13 +34,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.ciputramitra.ciputramitrahospital.AuthenticatedScreen
-import com.ciputramitra.ciputramitrahospital.biometrics.BiometricScreen
 import com.ciputramitra.ciputramitrahospital.component.bottomNavigation
 import com.ciputramitra.ciputramitrahospital.ui.consultation.ConsultationPatientOnline
 import com.ciputramitra.ciputramitrahospital.ui.consultation.ConsultationViewModel
 import com.ciputramitra.ciputramitrahospital.ui.doctorall.DoctorAllScreen
 import com.ciputramitra.ciputramitrahospital.ui.doctorall.DoctorAllViewModel
+import com.ciputramitra.ciputramitrahospital.ui.doctorall.DoctorDetailScreen
 import com.ciputramitra.ciputramitrahospital.ui.home.HomeScreen
 import com.ciputramitra.ciputramitrahospital.ui.home.HomeViewModel
 import com.ciputramitra.ciputramitrahospital.ui.info.InfoScreen
@@ -202,6 +201,7 @@ fun NavGraph(
         composable<DoctorAll> {
             BackHandler {
                 navController.navigateUp()
+                doctorAllViewModel.resetFilter()
             }
 
             val args = it.toRoute<DoctorAll>()
@@ -213,19 +213,19 @@ fun NavGraph(
             )
         }
 
-        composable<Biometric> {
-            if (isAuthenticated) {
-                // Show authenticated content
-                AuthenticatedScreen()
-            } else {
-                // Show biometric authentication screen
-                BiometricScreen(
-                    onAuthenticated = {
-                        isAuthenticated = true
-                    }
-                )
+        composable<DoctorDetailArgs> {
+            BackHandler {
+                navController.navigateUp()
             }
+
+            val args = it.toRoute<DoctorDetailArgs>()
+            DoctorDetailScreen(
+                doctorAllViewModel = doctorAllViewModel,
+                navController = navController,
+                doctorID = args.doctorID
+            )
         }
+
     }
 }
 

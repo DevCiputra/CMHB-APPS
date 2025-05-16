@@ -14,5 +14,5 @@ data class BottomNavigationItems(
     val selectedColor: Color,
     val unSelectedColor: Color,
     val badgeCount: Int? = null,
-    val routeScreen : String
+    val routeScreen: String
 )

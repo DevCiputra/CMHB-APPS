@@ -14,8 +14,7 @@ object Authentication
 @Serializable
 object Home
 
-@Serializable
-object Biometric
+
 
 @Serializable
 object ConsultationOnline
@@ -28,8 +27,8 @@ data class DoctorAll(
 
 
 @Serializable
-data class DetailProductArgs(
-    val productID: Int
+data class DoctorDetailArgs(
+    val doctorID: Int
 )
 
 @Serializable

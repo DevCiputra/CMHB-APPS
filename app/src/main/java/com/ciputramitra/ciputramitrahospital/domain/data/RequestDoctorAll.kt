@@ -7,5 +7,7 @@ data class RequestDoctorAll(
     val expensive: String? = "",
     val konsultasiStatus: String? = "",
     val reservasiStatus: String? = "",
-    val statusDokter: String? = ""
+    val statusDokter: String? = "",
+    val userName: String? = "",
+    val today: String? = ""
 )

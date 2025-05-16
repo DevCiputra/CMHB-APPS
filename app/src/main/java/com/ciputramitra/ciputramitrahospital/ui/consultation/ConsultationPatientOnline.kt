@@ -50,6 +50,8 @@ import com.ciputramitra.ciputramitrahospital.component.InformationBusy
 import com.ciputramitra.ciputramitrahospital.component.LoadingLottieAnimation
 import com.ciputramitra.ciputramitrahospital.navgraph.DoctorAll
 import com.ciputramitra.ciputramitrahospital.response.categoryPoly.Data
+import com.ciputramitra.ciputramitrahospital.ui.theme.greenColor
+import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsBold
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsLight
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsMedium
 import com.ciputramitra.ciputramitrahospital.ui.theme.whiteCustom
@@ -77,13 +79,15 @@ fun ConsultationPatientOnline(
         stickyHeader {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White
+                    containerColor = greenColor
                 ),
                 title = {
                     Text(
-                        text = "Spesialisasi",
-                        fontFamily = poppinsMedium,
-                        fontWeight = FontWeight.Medium
+                        text = "SPESIALISASI",
+                        fontFamily = poppinsBold,
+                        fontWeight = FontWeight.Medium,
+                        color = whiteCustom,
+                        fontSize = 17.sp
                     )
                 },
                 navigationIcon = {
@@ -97,6 +101,7 @@ fun ConsultationPatientOnline(
                             modifier = Modifier.padding(start = 10.dp, end = 10.dp),
                             imageVector = Icons.Default.ArrowCircleLeft,
                             contentDescription = null,
+                            tint = whiteCustom
                         )
                     }
 

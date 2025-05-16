@@ -2,33 +2,46 @@ package com.ciputramitra.ciputramitrahospital.ui.doctorall
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleLeft
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.ArrowCircleRight
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,8 +65,14 @@ import coil.request.ImageRequest
 import com.ciputramitra.ciputramitrahospital.R
 import com.ciputramitra.ciputramitrahospital.component.InformationBusy
 import com.ciputramitra.ciputramitrahospital.component.LoadingLottieAnimation
-import com.ciputramitra.ciputramitrahospital.response.doctorall.DoctorAllItems
+import com.ciputramitra.ciputramitrahospital.navgraph.DoctorDetailArgs
+import com.ciputramitra.ciputramitrahospital.response.doctorall.DoctorItems
+import com.ciputramitra.ciputramitrahospital.ui.theme.black
+import com.ciputramitra.ciputramitrahospital.ui.theme.greenColor
+import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsBold
+import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsLight
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsMedium
+import com.ciputramitra.ciputramitrahospital.ui.theme.smoothColor
 import com.ciputramitra.ciputramitrahospital.ui.theme.whiteCustom
 
 
@@ -67,7 +86,12 @@ fun DoctorAllScreen(
 ) {
 
     val doctor = doctorAllViewModel.doctors.collectAsLazyPagingItems()
-    var nameSpecialist by rememberSaveable { mutableStateOf("") }
+    var userNameDoctor by rememberSaveable { mutableStateOf("") }
+
+    val sheetState = rememberModalBottomSheetState()
+    var isOpenReviews by rememberSaveable { mutableStateOf(value = false) }
+
+
 
     LaunchedEffect(key1 = Unit) {
         doctorAllViewModel.fetchDoctorAll(
@@ -77,7 +101,9 @@ fun DoctorAllScreen(
             expensive = "",
             consultationStatus = "",
             reservationStatus = "",
-            statusDoctor = ""
+            statusDoctor = "",
+            userName = "",
+            today = ""
         )
     }
 
@@ -85,22 +111,22 @@ fun DoctorAllScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.White),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
 
         stickyHeader {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White
+                    containerColor = greenColor
                 ),
                 title = {
                     Text(
                         text = nameCategoryPolyclinic,
-                        fontFamily = poppinsMedium,
+                        fontFamily = poppinsBold,
                         fontWeight = FontWeight.Medium,
-                        fontSize = 15.sp,
-                        color = Color.Black,
+                        fontSize = 17.sp,
+                        color = whiteCustom,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -109,6 +135,7 @@ fun DoctorAllScreen(
                     IconButton(
                         onClick = {
                             navController.navigateUp()
+                            doctorAllViewModel.resetFilter()
                         },
 
                         ) {
@@ -116,6 +143,7 @@ fun DoctorAllScreen(
                             modifier = Modifier.padding(start = 10.dp, end = 10.dp),
                             imageVector = Icons.Default.ArrowCircleLeft,
                             contentDescription = null,
+                            tint = whiteCustom
                         )
                     }
 
@@ -127,17 +155,58 @@ fun DoctorAllScreen(
                 color = whiteCustom
             )
 
-            SearchSpecialis(
-                SpecialistName = nameSpecialist,
-                onNameSpecialistChange = { nameSpecialist = it },
+            Row(
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier.padding(start = 16.dp),
+                    text = "Menampilkan ${doctor.itemSnapshotList.items.size} Dokter",
+                    fontFamily = poppinsLight,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 15.sp,
+                    color = black
+                )
+
+                TextButton(
+                    onClick = { isOpenReviews = true },
+                    modifier = Modifier.padding(5.dp),
+                    colors = ButtonColors(
+                        containerColor = greenColor,
+                        contentColor = whiteCustom,
+                        disabledContentColor = greenColor,
+                        disabledContainerColor = whiteCustom
+                    )
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = "Filter"
+                        )
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown, // Atau ikon lain sesuai kebutuhan
+                            contentDescription = "Filter Icon"
+                        )
+                    }
+                }
+            }
+
+            SearchUserNameDoctor(
+                userNameDoctor = userNameDoctor,
+                onUserNameDoctorChange = { userNameDoctor = it },
                 onSearchClicked = {
                     doctorAllViewModel.fetchDoctorAll(
-                        specialName = nameSpecialist
+                        userName = userNameDoctor
                     )
                 }
             )
 
         }
+
 
         items(
             count = doctor.itemCount,
@@ -150,6 +219,12 @@ fun DoctorAllScreen(
                     navController = navController
                 )
             }
+
+            HorizontalDivider(
+                modifier = Modifier.padding(top = 10.dp),
+                thickness = 2.dp,
+                color = whiteCustom
+            )
         }
 
         doctor.apply {
@@ -164,12 +239,138 @@ fun DoctorAllScreen(
             }
         }
     }
+
+    if (isOpenReviews) {
+        ModalBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = {
+                isOpenReviews = false
+            }
+        ) {
+            BottomSheetFilter(
+                doctorAllViewModel = doctorAllViewModel,
+                onReset = {
+                    isOpenReviews = false
+                }
+            )
+        }
+    }
 }
 
 @Composable
-fun SearchSpecialis(
-    SpecialistName: String,
-    onNameSpecialistChange: (String) -> Unit,
+fun BottomSheetFilter(
+    doctorAllViewModel: DoctorAllViewModel,
+    onReset: () -> Unit,
+) {
+
+    // Observe selectedDay dari ViewModel
+    val queryParams by doctorAllViewModel.queryParams.collectAsState()
+    val selectedDay = queryParams.today
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(start = 14.dp , bottom = 4.dp),
+            text = "Filter Hari Konsultasi",
+            fontFamily = poppinsMedium,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
+        )
+
+        Text(
+            modifier = Modifier
+                .padding(end = 18.dp , bottom = 4.dp)
+                .clickable{
+                    doctorAllViewModel.fetchDoctorAll(
+                        today = ""
+                    )
+                    onReset()
+                },
+            text = "Reset",
+            fontFamily = poppinsMedium,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
+            color = greenColor
+        )
+    }
+
+    HorizontalDivider(
+        thickness = 1.dp,
+        color = Color.LightGray
+    )
+
+    FilterToday(
+        selectedDay = selectedDay,
+        onTodayClicked = { selectedToday ->
+            doctorAllViewModel.fetchDoctorAll(
+                today = selectedToday
+            )
+        }
+    )
+
+}
+
+@Composable
+fun FilterToday(
+    onTodayClicked: (String) -> Unit,
+    selectedDay: String?
+) {
+
+    FlowRow(
+        modifier = Modifier.fillMaxWidth()
+            .padding(12.dp),
+        maxItemsInEachRow = 8,
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+
+        val days = listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu")
+
+        days.forEach { day ->
+            FilterText(
+                text = day,
+                isSelected = selectedDay == day,
+                onClick = {
+                    onTodayClicked(day)
+                }
+            )
+        }
+
+    }
+
+}
+
+@Composable
+fun FilterText(
+    text : String ,
+    isSelected : Boolean ,
+    onClick : () -> Unit
+) {
+    Text(
+        modifier = Modifier
+            .background(
+                color = if (isSelected) greenColor else Color.LightGray ,
+                shape = RoundedCornerShape(6.dp)
+            )
+            .clickable { onClick() }
+            .padding(12.dp) ,
+        text = text ,
+        fontSize = 13.sp ,
+        fontFamily = poppinsMedium ,
+        fontWeight = FontWeight.Bold ,
+        color = Color.White
+    )
+}
+
+@Composable
+fun SearchUserNameDoctor(
+    userNameDoctor: String,
+    onUserNameDoctorChange: (String) -> Unit,
     onSearchClicked: () -> Unit
 ) {
     TextField(
@@ -181,17 +382,17 @@ fun SearchSpecialis(
                 color = Color.LightGray,
                 shape = RoundedCornerShape(12.dp)
             ),
-        value = SpecialistName,
-        onValueChange = onNameSpecialistChange,
+        value = userNameDoctor,
+        onValueChange = onUserNameDoctorChange,
         placeholder = {
             Text(
-                text = "silahkan cari spesialis",
+                text = "silahkan cari nama dokter",
             )
         },
         textStyle = TextStyle(
             fontFamily = poppinsMedium,
-            fontSize = 12.sp,
-            color = Color.Gray
+            fontSize = 14.sp,
+            color = black
         ) ,
         shape = RoundedCornerShape(8.dp),
         colors = TextFieldDefaults.colors(
@@ -204,7 +405,7 @@ fun SearchSpecialis(
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = null,
-                tint = Color.LightGray
+                tint = smoothColor
             )
         },
         singleLine = true,
@@ -215,45 +416,114 @@ fun SearchSpecialis(
 
 @Composable
 fun DoctorAllItem(
-    doctorsItems: DoctorAllItems,
+    doctorsItems: DoctorItems,
     navController: NavController
 ) {
     Row(
         modifier = Modifier
+            .clickable {
+                navController.navigate(
+                    route = DoctorDetailArgs(
+                        doctorID = doctorsItems.id
+                    )
+                )
+            }
             .fillMaxWidth()
             .padding(start = 12.dp, end = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        horizontalArrangement = Arrangement.spacedBy(13.dp)
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(context = LocalContext.current)
-                .data(doctorsItems.users.avatar)
-                .error(R.drawable.logo)
-                .build(),
-            contentDescription = null,
-            modifier = Modifier
-                .size(70.dp)
-                .clip(shape = RoundedCornerShape(8.dp)),
-            contentScale = ContentScale.Crop
-        )
+
+        Box(
+            modifier = Modifier.size(70.dp)
+        ) {
+
+            AsyncImage(
+                model = ImageRequest.Builder(context = LocalContext.current)
+                    .data(doctorsItems.users.avatar)
+                    .error(R.drawable.logo)
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(70.dp)
+                    .clip(shape = RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop
+            )
+
+
+
+            Box(
+                modifier = Modifier
+                    .size(12.dp)
+                    .background(
+                        color = if(doctorsItems.statusDokter == "AKTIF") greenColor else Color.Gray,
+                        shape = CircleShape
+                    )
+                    .border(
+                        width = 1.5.dp,
+                        color = Color.White,
+                        shape = CircleShape
+                    )
+                    // Posisikan di pojok kanan bawah
+                    .align(Alignment.TopEnd)
+                    // Offset sedikit agar tidak terlalu di ujung
+                    .offset(x = (-4).dp, y = (-4).dp)
+            )
+        }
 
         Column(
             modifier = Modifier
                 .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             Text(
-                text = doctorsItems.users.name
+                text = "${doctorsItems.users.role}. ${doctorsItems.users.name}",
+                fontFamily = poppinsMedium,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Medium,
+                color = black,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
 
             Text(
-                text = doctorsItems.spesialisName
+                text = doctorsItems.spesialisName,
+                fontFamily = poppinsLight,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
 
             Text(
-                text = doctorsItems.categoryPolyclinics.categoryPolyclinic
+                text = "Poliklinik : ${doctorsItems.categoryPolyclinics.categoryPolyclinic}",
+                fontFamily = poppinsMedium,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = black,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = if (doctorsItems.statusDokter != "AKTIF") "offline" else "online",
+                    fontFamily = poppinsLight,
+                    fontWeight = FontWeight.Medium,
+                    color = if (doctorsItems.statusDokter != "AKTIF") Color.LightGray else greenColor
+                )
+
+                Icon(
+                    imageVector = Icons.Rounded.ArrowCircleRight,
+                    contentDescription = null,
+                    tint = if(doctorsItems.statusDokter == "AKTIF") greenColor else Color.Gray,
+                )
+            }
+
         }
     }
 }

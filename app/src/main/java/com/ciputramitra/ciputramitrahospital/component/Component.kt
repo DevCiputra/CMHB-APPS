@@ -14,33 +14,24 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.AddToHomeScreen
-import androidx.compose.material.icons.automirrored.rounded.Assignment
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.HomeRepairService
-import androidx.compose.material.icons.filled.MedicalInformation
-import androidx.compose.material.icons.filled.MedicalServices
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarOutline
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.AssignmentTurnedIn
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.HomeRepairService
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.MedicalInformation
-import androidx.compose.material.icons.outlined.MedicalServices
-import androidx.compose.material.icons.outlined.MonetizationOn
+import androidx.compose.material.icons.outlined.Medication
+import androidx.compose.material.icons.outlined.Newspaper
 import androidx.compose.material.icons.outlined.StarRate
 import androidx.compose.material.icons.rounded.AccountCircle
-import androidx.compose.material.icons.rounded.AssignmentTurnedIn
-import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material.icons.rounded.MonetizationOn
+import androidx.compose.material.icons.rounded.Medication
+import androidx.compose.material.icons.rounded.NestCamWiredStand
+import androidx.compose.material.icons.rounded.Newspaper
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
@@ -183,8 +174,8 @@ fun bottomNavigation(): List<BottomNavigationItems> {
         ),
         BottomNavigationItems(
             title = "Artikel",
-            selectedIcon = Icons.Rounded.Info,
-            unSelectedIcon = Icons.Outlined.Info,
+            selectedIcon = Icons.Rounded.Newspaper,
+            unSelectedIcon = Icons.Outlined.Newspaper,
             selectedIconColor = greenColor,
             unSelectedIconColor = Color.Gray,
             selectedColor = Color.Black,
@@ -194,8 +185,8 @@ fun bottomNavigation(): List<BottomNavigationItems> {
         ),
         BottomNavigationItems(
             title = "Riwayat",
-            selectedIcon = Icons.Rounded.History,
-            unSelectedIcon = Icons.Outlined.History,
+            selectedIcon = Icons.Rounded.Medication,
+            unSelectedIcon = Icons.Outlined.Medication,
             selectedIconColor = greenColor,
             unSelectedIconColor = Color.Gray,
             selectedColor = Color.Black,

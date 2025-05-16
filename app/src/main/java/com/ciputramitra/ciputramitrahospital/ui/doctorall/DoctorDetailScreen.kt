@@ -16,14 +16,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ShoppingBasket
 import androidx.compose.material.icons.rounded.ArrowCircleLeft
 import androidx.compose.material.icons.rounded.ArrowCircleRight
+import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material.icons.rounded.Videocam
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -75,84 +82,162 @@ fun DoctorDetailScreen(
         doctorAllViewModel.fetchDoctorDetail(id = doctorID)
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.Start
-    ) {
-        TopAppBar(
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = greenColor,
-            ),
-            title = {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        modifier = Modifier.padding(start = 12.dp),
-                        text = "Profil Dokter",
-                        fontFamily = poppinsBold,
-                        fontSize = 17.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = whiteCustom
-                    )
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = greenColor,
+                ),
+                title = {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(start = 12.dp),
+                            text = "Profil Dokter",
+                            fontFamily = poppinsBold,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = whiteCustom
+                        )
 
-                    Icon(
-                        modifier = Modifier.padding(end = 12.dp),
-                        imageVector = Icons.Rounded.Share,
-                        contentDescription = null,
-                        tint = whiteCustom,
-                    )
+                        Icon(
+                            modifier = Modifier.padding(end = 12.dp),
+                            imageVector = Icons.Rounded.Share,
+                            contentDescription = null,
+                            tint = whiteCustom,
+                        )
+                    }
+                },
+
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            navController.navigateUp()
+                        }
+                    ) {
+                        Icon(
+                            modifier = Modifier.padding(start = 16.dp),
+                            imageVector = Icons.Rounded.ArrowCircleLeft,
+                            contentDescription = null,
+                            tint = whiteCustom
+                        )
+                    }
                 }
-            },
+            )
+        },
 
-            navigationIcon = {
-                IconButton(
+        bottomBar = {
+            BottomAppBar(
+                containerColor = whiteCustom
+            ) {
+                Button(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 12.dp) ,
+                    shape = RoundedCornerShape(8.dp) ,
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = Color.LightGray
+                    ) ,
                     onClick = {
-                        navController.navigateUp()
+//                        isOpenCart = true
                     }
                 ) {
                     Icon(
-                        modifier = Modifier.padding(start = 16.dp),
-                        imageVector = Icons.Rounded.ArrowCircleLeft,
-                        contentDescription = null,
-                        tint = whiteCustom
+                        imageVector = Icons.Rounded.CalendarMonth ,
+                        contentDescription = null ,
+                        modifier = Modifier
+                            .size(22.dp)
+                            .padding(5.dp) ,
+                        tint = Color.White
+                    )
+
+                    Text(
+                        color = Color.White ,
+                        text = "Reservasi" ,
+                        fontFamily = poppinsMedium ,
+                        fontSize = 12.sp ,
+                        fontWeight = FontWeight.Bold ,
+                        maxLines = 1 ,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                Button(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 12.dp) ,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = greenColor ,
+                    ) ,
+                    shape = RoundedCornerShape(8.dp) ,
+                    onClick = {
+//                        isOpenCart = true
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Videocam ,
+                        contentDescription = null ,
+                        modifier = Modifier
+                            .size(22.dp)
+                            .padding(5.dp) ,
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "Konsultasi online" ,
+                        fontFamily = poppinsMedium ,
+                        fontSize = 12.sp ,
+                        fontWeight = FontWeight.Bold ,
+                        maxLines = 1 ,
+                        overflow = TextOverflow.Ellipsis ,
+                        color = Color.White
                     )
                 }
             }
-        )
-
-        when (val state = doctorDetailState) {
-            is StateManagement.Loading -> {
-                LoadingLottieAnimation()
-            }
-
-            is StateManagement.Error -> Toast.makeText(
-                LocalContext.current ,
-                state.message ,
-                Toast.LENGTH_SHORT
-            ).show()
-
-            is StateManagement.DoctorDetailSuccess -> {
-                HeaderProfileDoctor(
-                    dataDoctor = state.doctorDetailResponse.data
-                )
-
-                HorizontalDivider(
-                    modifier = Modifier.padding(top = 10.dp, bottom = 4.dp),
-                    thickness = 3.dp,
-                    color = whiteCustom
-                )
-
-            }
-
-            else -> doctorAllViewModel.clearStateDetail()
         }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            horizontalAlignment = Alignment.Start
+        ) {
 
+
+            when (val state = doctorDetailState) {
+                is StateManagement.Loading -> {
+                    LoadingLottieAnimation()
+                }
+
+                is StateManagement.Error -> Toast.makeText(
+                    LocalContext.current ,
+                    state.message ,
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                is StateManagement.DoctorDetailSuccess -> {
+                    HeaderProfileDoctor(
+                        dataDoctor = state.doctorDetailResponse.data
+                    )
+
+                    HorizontalDivider(
+                        modifier = Modifier.padding(top = 10.dp, bottom = 4.dp),
+                        thickness = 3.dp,
+                        color = whiteCustom
+                    )
+
+                }
+
+                else -> doctorAllViewModel.clearStateDetail()
+            }
+
+        }
     }
+
+
 }
 
 

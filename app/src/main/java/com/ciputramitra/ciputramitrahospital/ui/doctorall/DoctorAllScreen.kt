@@ -41,7 +41,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -266,6 +265,8 @@ fun BottomSheetFilter(
     // Observe selectedDay dari ViewModel
     val queryParams by doctorAllViewModel.queryParams.collectAsState()
     val selectedDay = queryParams.today
+    val selectedCheap = queryParams.cheap
+    val selectedExpensive = queryParams.expensive
 
     Row(
         modifier = Modifier
@@ -329,7 +330,7 @@ fun FilterToday(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
 
-        val days = listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu")
+        val days = listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu")
 
         days.forEach { day ->
             FilterText(
@@ -358,9 +359,9 @@ fun FilterText(
                 shape = RoundedCornerShape(6.dp)
             )
             .clickable { onClick() }
-            .padding(12.dp) ,
+            .padding(10.dp) ,
         text = text ,
-        fontSize = 13.sp ,
+        fontSize = 10.sp ,
         fontFamily = poppinsMedium ,
         fontWeight = FontWeight.Bold ,
         color = Color.White

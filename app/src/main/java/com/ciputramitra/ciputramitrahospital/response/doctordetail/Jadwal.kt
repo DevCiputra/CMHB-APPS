@@ -1,6 +1,4 @@
 package com.ciputramitra.ciputramitrahospital.response.doctordetail
-
-
 import com.google.gson.annotations.SerializedName
 
 data class Jadwal(

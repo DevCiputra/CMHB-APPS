@@ -41,7 +41,7 @@ data class Data(
     @SerializedName("status_dokter")
     val statusDokter: String,
     @SerializedName("ulasans")
-    val ulasans: List<Any>,
+    val ulasans: List<Ulasans>,
     @SerializedName("updated_at")
     val updatedAt: String,
     @SerializedName("user_id")

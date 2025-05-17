@@ -1,29 +1,47 @@
 package com.ciputramitra.ciputramitrahospital.ui.doctorall
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.rounded.AccessTime
 import androidx.compose.material.icons.rounded.ArrowCircleLeft
 import androidx.compose.material.icons.rounded.CalendarMonth
+import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.Medication
+import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.RateReview
+import androidx.compose.material.icons.rounded.School
 import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material.icons.rounded.StarRate
 import androidx.compose.material.icons.rounded.Videocam
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -44,6 +62,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -54,8 +73,14 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ciputramitra.ciputramitrahospital.R
 import com.ciputramitra.ciputramitrahospital.component.LoadingLottieAnimation
+import com.ciputramitra.ciputramitrahospital.component.formatDate
 import com.ciputramitra.ciputramitrahospital.domain.state.StateManagement
 import com.ciputramitra.ciputramitrahospital.response.doctordetail.Data
+import com.ciputramitra.ciputramitrahospital.response.doctordetail.Jadwal
+import com.ciputramitra.ciputramitrahospital.response.doctordetail.Medic
+import com.ciputramitra.ciputramitrahospital.response.doctordetail.Pendidikan
+import com.ciputramitra.ciputramitrahospital.response.doctordetail.Pengalaman
+import com.ciputramitra.ciputramitrahospital.response.doctordetail.Ulasans
 import com.ciputramitra.ciputramitrahospital.ui.theme.black
 import com.ciputramitra.ciputramitrahospital.ui.theme.greenColor
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsBold
@@ -310,12 +335,176 @@ fun UlasanContent(dataDoctor: Data) {
                     text = "Masih kosong"
                 )
             else
-                Text(
-                    text = "Ada"
+                ReviewsPatient(
+                    dataDoctor = dataDoctor.ulasans
                 )
+        }
+        
+    }
+}
+
+@SuppressLint("DefaultLocale")
+@Composable
+fun ReviewsPatient(dataDoctor: List<Ulasans>) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            // Header with title and overall rating
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Ulasan Pasien",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium,
+                    color = Color(0xFF1F2937)
+                )
+                
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Star,
+                        contentDescription = "Rating",
+                        tint = Color(0xFFEAB308),
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Text(
+                        text = if (dataDoctor.isNotEmpty()) {
+                            val averageRating = dataDoctor.map { it.rating }.average()
+                            String.format("%.1f", averageRating)
+                        } else "0.0",
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xFF1F2937),
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
+                    Text(
+                        text = "(${dataDoctor.size})",
+                        fontSize = 12.sp,
+                        color = Color(0xFF6B7280),
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
+                }
+            }
+            
+            HorizontalDivider(color = whiteCustom)
+            
+            if (dataDoctor.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 24.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Masih Kosong",
+                        color = Color(0xFF6B7280),
+                        fontSize = 14.sp
+                    )
+                }
+            } else {
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                // List of reviews
+                dataDoctor.forEach { itemReviews ->
+                    ReviewItem(itemReviews)
+                    
+                    if (itemReviews != dataDoctor.last()) {
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = 12.dp),
+                            color = Color(0xFFE5E7EB)
+                        )
+                    }
+                }
+            }
         }
     }
 }
+
+@Composable
+fun ReviewItem(review: Ulasans) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top
+    ) {
+        
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .background(Color(0xFFE5E7EB), CircleShape)
+                .clip(CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = review.namePatient.first().uppercase(),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color(0xFF6B7280)
+            )
+        }
+        
+        Column(
+            modifier = Modifier
+                .padding(start = 12.dp)
+                .weight(1f)
+        ) {
+            
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = review.namePatient,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color(0xFF1F2937)
+                )
+                
+                Text(
+                    text = formatDate(review.createdAt),
+                    fontSize = 12.sp,
+                    color = Color(0xFF6B7280)
+                )
+            }
+            
+           
+            Row(
+                modifier = Modifier.padding(vertical = 8.dp)
+            ) {
+                repeat(5) { index ->
+                    Icon(
+                        imageVector = Icons.Filled.Star,
+                        contentDescription = null,
+                        tint = if (index < review.rating) Color(0xFFEAB308) else Color(0xFFE5E7EB),
+                        modifier = Modifier
+                            .size(16.dp)
+                            .padding(end = 2.dp)
+                    )
+                }
+            }
+            
+           
+            Text(
+                text = review.reviewsPatient,
+                fontSize = 14.sp,
+                color = Color(0xFF4B5563),
+                lineHeight = 20.sp
+            )
+        }
+    }
+}
+
+
 
 @Composable
 fun JadwalContent(dataDoctor: Data) {
@@ -325,12 +514,153 @@ fun JadwalContent(dataDoctor: Data) {
             .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        // Isi konten...
-        // Item-item LazyColumn tetap seperti sebelumnya
+        
         item {
-            Text(
-                text = dataDoctor.users.role
+            Row(
+                modifier = Modifier,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.CalendarMonth,
+                    contentDescription = "icon_profile",
+                    tint = greenColor,
+                )
+                
+                Text(
+                    modifier = Modifier.padding(top = 6.dp),
+                    text = "Jadwal Praktek",
+                    fontFamily = poppinsMedium,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+        
+        item {
+            PracticeSchedule(
+                dataDoctor = dataDoctor.jadwals
             )
+        }
+    }
+}
+
+@Composable
+fun PracticeSchedule(dataDoctor: List<Jadwal>) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            if (dataDoctor.isEmpty()) {
+                Text(
+                    text = "Belum ada jadwal",
+                    fontFamily = poppinsMedium,
+                    fontSize = 14.sp,
+                    color = Color.Gray
+                )
+            } else {
+                
+                // Tampilkan jadwal
+                dataDoctor.forEach { itemSchedule ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Tampilkan hari (3 huruf)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // Ambil 3 huruf pertama dari nama hari
+                            val shortDay = if (itemSchedule.hari.length >= 3) {
+                                itemSchedule.hari.substring(0, 3).uppercase()
+                            } else {
+                                itemSchedule.hari.uppercase() // Gunakan lengkap jika kurang dari 3 huruf
+                            }
+                            
+                            Text(
+                                modifier = Modifier
+                                    .background(
+                                        color = smoothColor,
+                                        shape = RoundedCornerShape(6.dp)
+                                    )
+                                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                                text = shortDay,
+                                fontSize = 12.sp,
+                                fontFamily = poppinsMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = whiteCustom
+                            )
+                            
+                            Column(
+                                modifier = Modifier,
+                                verticalArrangement = Arrangement.spacedBy(2.dp)
+                            ) {
+                                Text(
+                                    modifier = Modifier.padding(start = 16.dp),
+                                    text = itemSchedule.hari,
+                                    fontSize = 14.sp,
+                                    fontFamily = poppinsMedium,
+                                    color = black,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                
+                                Row(
+                                    modifier = Modifier.padding(start = 16.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        modifier = Modifier
+                                            .size(12.dp),
+                                        imageVector = Icons.Rounded.AccessTime,
+                                        contentDescription = null,
+                                        tint = Color.Gray,
+                                    )
+                                    
+                                    // Tampilkan jam praktek
+                                    Text(
+                                        text = itemSchedule.jadwalJam,
+                                        fontFamily = poppinsLight,
+                                        fontSize = 14.sp,
+                                        color = Color.Gray,
+                                    )
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                        // Jika ada informasi tambahan seperti status tersedia atau tidak
+                        // Anda bisa menambahkannya di sini
+                        Text(
+                            text = "Tersedia",
+                            fontFamily = poppinsLight,
+                            fontSize = 12.sp,
+                            color = greenColor
+                        )
+                    }
+                    
+                    // Tambahkan divider kecuali untuk item terakhir
+                    if (itemSchedule != dataDoctor.last()) {
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = 8.dp),
+                            color = Color.LightGray.copy(alpha = 0.5f),
+                            thickness = 0.5.dp
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -346,8 +676,358 @@ fun ProfileContent(dataDoctor: Data) {
         // Isi konten...
         // Item-item LazyColumn tetap seperti sebelumnya
         item {
+            Row(
+                modifier = Modifier,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Person,
+                    contentDescription = "icon_profile",
+                    tint = greenColor,
+                )
+                
+                Text(
+                    modifier = Modifier.padding(top = 6.dp),
+                    text = "BIOGRAFI",
+                    fontFamily = poppinsMedium,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+        
+        item {
+            ExpandableBiography(
+                text = dataDoctor.biografi
+            )
+        }
+        
+        item {
+            Row(
+                modifier = Modifier,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.School,
+                    contentDescription = "icon_education",
+                    tint = greenColor,
+                )
+                
+                Text(
+                    modifier = Modifier.padding(top = 6.dp),
+                    text = "Pendidikan",
+                    fontFamily = poppinsMedium,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+        
+        item {
+            ExpandableEducation(
+                dataEducation = dataDoctor.pendidikans
+            )
+        }
+        
+        item {
+            Row(
+                modifier = Modifier
+                    .padding(top = 6.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.CheckCircle,
+                    contentDescription = "icon_experience",
+                    tint = greenColor,
+                )
+                
+                Text(
+                    modifier = Modifier.padding(top = 6.dp),
+                    text = "Pengalaman Praktek",
+                    fontFamily = poppinsMedium,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+        
+        item {
+            ExpandableAction(
+                dataDoctor = dataDoctor.medics
+            )
+        }
+        
+        item {
+            Row(
+                modifier = Modifier
+                    .padding(top = 6.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Medication,
+                    contentDescription = "icon_medic",
+                    tint = greenColor,
+                )
+                
+                Text(
+                    modifier = Modifier.padding(top = 6.dp),
+                    text = "Tindakan Medis",
+                    fontFamily = poppinsMedium,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+        
+        item {
+            ExpandableExperience(
+                dataDoctor = dataDoctor.pengalamans
+            )
+        }
+    }
+}
+
+@Composable
+fun ExpandableAction(dataDoctor: List<Medic>) {
+    // State untuk melacak apakah daftar tindakan medis sedang diperluas atau tidak
+    var isExpanded by remember { mutableStateOf(false) }
+    
+    // Tampilkan maksimal 2 item jika tidak diperluas, atau semua item jika diperluas
+    val dataToShow = if (isExpanded) dataDoctor else dataDoctor.take(2)
+    
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.Start
+    ) {
+        if (dataDoctor.isEmpty()) {
             Text(
-                text = dataDoctor.users.name
+                text = "-",
+                fontFamily = poppinsMedium,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Gray
+            )
+        } else {
+            // Daftar tindakan medis
+            dataToShow.forEach { itemMedic ->
+                Text(
+                    text = "- ${itemMedic.namaTindakanMedis}",
+                    fontFamily = poppinsMedium,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.Gray
+                )
+            }
+            
+            // Tombol expand/collapse hanya jika ada lebih dari 2 item tindakan medis
+            if (dataDoctor.size > 2) {
+                Spacer(modifier = Modifier.height(4.dp))
+                
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { isExpanded = !isExpanded }
+                        .padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = if (isExpanded) "Lihat Lebih Sedikit" else "Lihat ${dataDoctor.size - 2} Lainnya",
+                        fontFamily = poppinsMedium,
+                        fontSize = 12.sp,
+                        color = Color(0xFF4E97FD),
+                        modifier = Modifier.padding(end = 4.dp)
+                    )
+                    
+                    Icon(
+                        imageVector = if (isExpanded) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown,
+                        contentDescription = if (isExpanded) "Collapse" else "Expand",
+                        tint = Color(0xFF4E97FD),
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ExpandableExperience(dataDoctor: List<Pengalaman>) {
+    // State untuk melacak apakah daftar pengalaman sedang diperluas atau tidak
+    var isExpanded by remember { mutableStateOf(false) }
+    
+    // Tampilkan maksimal 3 item jika tidak diperluas, atau semua item jika diperluas
+    val dataToShow = if (isExpanded) dataDoctor else dataDoctor.take(1)
+    
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.Start
+    ) {
+        if (dataDoctor.isEmpty()) {
+            Text(
+                text = "-",
+                fontFamily = poppinsMedium,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Gray
+            )
+        } else {
+            // Daftar pengalaman
+            dataToShow.forEach { itemExperience ->
+                Text(
+                    text = "- ${itemExperience.namaPengalamanPraktek}",
+                    fontFamily = poppinsMedium,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.Gray
+                )
+            }
+            
+            // Tombol expand/collapse hanya jika ada lebih dari 3 item pengalaman
+            if (dataDoctor.size > 1) {
+                Spacer(modifier = Modifier.height(4.dp))
+                
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { isExpanded = !isExpanded }
+                        .padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = if (isExpanded) "Lihat Lebih Sedikit" else "Lihat ${dataDoctor.size - 1} Lainnya",
+                        fontFamily = poppinsMedium,
+                        fontSize = 12.sp,
+                        color = Color(0xFF4E97FD),
+                        modifier = Modifier
+                            .padding(end = 4.dp)
+                    )
+                    
+                    Icon(
+                        imageVector = if (isExpanded) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown,
+                        contentDescription = if (isExpanded) "Collapse" else "Expand",
+                        tint = Color(0xFF4E97FD),
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ExpandableEducation(dataEducation: List<Pendidikan>) {
+    // State untuk melacak apakah daftar pendidikan sedang diperluas atau tidak
+    var isExpanded by remember { mutableStateOf(false) }
+    
+    // Tampilkan maksimal 2 item jika tidak diperluas, atau semua item jika diperluas
+    val dataToShow = if (isExpanded) dataEducation else dataEducation.take(2)
+    
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.Start
+    ) {
+        if (dataEducation.isEmpty()) {
+            Text(
+                text = "-",
+                fontFamily = poppinsMedium,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Gray
+            )
+        } else {
+            // Daftar pendidikan
+            dataToShow.forEach { itemEducation ->
+                Text(
+                    text = "- ${itemEducation.namaRiwayatPendidikan}",
+                    fontFamily = poppinsMedium,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.Gray
+                )
+            }
+            
+            // Tombol expand/collapse hanya jika ada lebih dari 2 item pendidikan
+            if (dataEducation.size > 2) {
+                Spacer(modifier = Modifier.height(4.dp))
+                
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { isExpanded = !isExpanded }
+                        .padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = if (isExpanded) "Lihat Lebih Sedikit" else "Lihat ${dataEducation.size - 2} Lainnya",
+                        fontFamily = poppinsMedium,
+                        fontSize = 12.sp,
+                        color = Color(0xFF4E97FD),
+                        modifier = Modifier.padding(end = 4.dp)
+                    )
+                    
+                    Icon(
+                        imageVector = if (isExpanded) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown,
+                        contentDescription = if (isExpanded) "Collapse" else "Expand",
+                        tint = Color(0xFF4E97FD),
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
+fun ExpandableBiography(text: String) {
+    // State untuk melacak apakah teks sedang diperluas atau tidak
+    var isExpanded by remember { mutableStateOf(false) }
+    
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = text,
+            fontFamily = poppinsLight,
+            fontSize = 12.sp,
+            maxLines = if (isExpanded) Int.MAX_VALUE else 4, // Tidak terbatas saat diperluas
+            overflow = TextOverflow.Ellipsis,
+            fontWeight = FontWeight.Medium,
+            color = Color.Gray
+        )
+        
+        // Row untuk tombol expand/collapse dengan arrow
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { isExpanded = !isExpanded }
+                .padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = if (isExpanded) "Lihat Lebih Sedikit" else "Lihat Selengkapnya",
+                fontFamily = poppinsMedium,
+                fontSize = 12.sp,
+                color = Color(0xFF4E97FD),
+                modifier = Modifier.padding(end = 4.dp)
+            )
+            
+            Icon(
+                imageVector = if (isExpanded) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown,
+                contentDescription = if (isExpanded) "Collapse" else "Expand",
+                tint = Color(0xFF4E97FD),
+                modifier = Modifier.size(16.dp)
             )
         }
     }

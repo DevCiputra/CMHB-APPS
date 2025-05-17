@@ -64,6 +64,8 @@ import com.ciputramitra.ciputramitrahospital.R
 import com.ciputramitra.ciputramitrahospital.domain.data.BottomNavigationItems
 import com.ciputramitra.ciputramitrahospital.ui.theme.greenColor
 import com.ciputramitra.ciputramitrahospital.ui.theme.textColor
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun FormTextField(
@@ -312,5 +314,20 @@ fun RatingBarSmall(
                 tint = colorResource(id = R.color.yellow)
             )
         }
+    }
+}
+
+@Composable
+fun formatDate(dateString: String): String {
+    try {
+        // Parse the original date format
+        val originalFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale("id", "ID"))
+        val date = originalFormat.parse(dateString)
+        
+        // Format to the desired output
+        val targetFormat = SimpleDateFormat("dd MMM yyyy", Locale("id", "ID"))
+        return date?.let { targetFormat.format(it) } ?: dateString
+    } catch (e: Exception) {
+        return dateString
     }
 }

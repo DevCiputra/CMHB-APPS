@@ -9,6 +9,8 @@ data class Ulasans(
 	val dokterProfileId: Int,
 	@SerializedName("nama_pasien")
 	val namePatient: String,
+	@SerializedName("ulasan_pasien")
+	val reviewsPatient: String,
 	@SerializedName("rating")
 	val rating: Int,
 	@SerializedName("created_at")

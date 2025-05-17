@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.ArrowCircleLeft
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.ArrowCircleRight
+import androidx.compose.material.icons.rounded.SearchOff
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -47,11 +48,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -94,15 +97,16 @@ fun DoctorAllScreen(
 
     LaunchedEffect(key1 = Unit) {
         doctorAllViewModel.fetchDoctorAll(
-            specialName = "",
+            statusDoctor = "",
             categoryPolyclinicID = categoryPolyclinicID,
+            specialName = "",
             cheap = "",
             expensive = "",
             consultationStatus = "",
             reservationStatus = "",
-            statusDoctor = "",
             userName = "",
             today = ""
+            
         )
     }
 
@@ -205,8 +209,12 @@ fun DoctorAllScreen(
             )
 
         }
-
-
+        
+        if (doctor.itemCount == 0 && doctor.loadState.refresh !is LoadState.Loading)
+            item {
+                EmptyStateView()
+            }
+        else
         items(
             count = doctor.itemCount,
             key = doctor.itemKey { it.id }
@@ -265,8 +273,6 @@ fun BottomSheetFilter(
     // Observe selectedDay dari ViewModel
     val queryParams by doctorAllViewModel.queryParams.collectAsState()
     val selectedDay = queryParams.today
-    val selectedCheap = queryParams.cheap
-    val selectedExpensive = queryParams.expensive
 
     Row(
         modifier = Modifier
@@ -526,6 +532,38 @@ fun DoctorAllItem(
             }
 
         }
+    }
+}
+
+// Komponen reusable untuk menampilkan empty state
+@Composable
+fun EmptyStateView(
+    message: String = "Data tidak ditemukan",
+    icon: ImageVector = Icons.Rounded.SearchOff
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = "Empty Data",
+            modifier = Modifier
+                .size(80.dp)
+                .padding(bottom = 16.dp),
+            tint = Color.Gray
+        )
+        
+        Text(
+            text = message,
+            fontFamily = poppinsMedium,
+            fontSize = 16.sp,
+            color = Color.Gray,
+            textAlign = TextAlign.Center
+        )
     }
 }
 

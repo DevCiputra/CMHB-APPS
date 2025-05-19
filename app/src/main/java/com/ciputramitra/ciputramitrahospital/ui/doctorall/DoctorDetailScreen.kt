@@ -72,6 +72,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ciputramitra.ciputramitrahospital.R
+import com.ciputramitra.ciputramitrahospital.component.EmptyStateView
 import com.ciputramitra.ciputramitrahospital.component.LoadingLottieAnimation
 import com.ciputramitra.ciputramitrahospital.component.formatDate
 import com.ciputramitra.ciputramitrahospital.domain.state.StateManagement
@@ -331,8 +332,8 @@ fun UlasanContent(dataDoctor: Data) {
         // Item-item LazyColumn tetap seperti sebelumnya
         item {
             if (dataDoctor.ulasans.isEmpty())
-                Text(
-                    text = "Masih kosong"
+                EmptyStateView(
+                    message = "Ulasan belum tersedia. Bagikan pengalaman Anda setelah konsultasi"
                 )
             else
                 ReviewsPatient(
@@ -1057,7 +1058,8 @@ fun HeaderProfileDoctor(dataDoctor: Data) {
 
         Column(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(top = 3.dp),
             verticalArrangement = Arrangement.spacedBy(3.dp),
         ) {
 
@@ -1067,6 +1069,8 @@ fun HeaderProfileDoctor(dataDoctor: Data) {
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium,
                 color = black,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
 
             Text(

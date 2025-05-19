@@ -30,6 +30,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -65,6 +66,7 @@ import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ciputramitra.ciputramitrahospital.R
+import com.ciputramitra.ciputramitrahospital.component.EmptyStateView
 import com.ciputramitra.ciputramitrahospital.component.InformationBusy
 import com.ciputramitra.ciputramitrahospital.component.LoadingLottieAnimation
 import com.ciputramitra.ciputramitrahospital.navgraph.DoctorDetailArgs
@@ -117,102 +119,123 @@ fun DoctorAllScreen(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-
+        
         stickyHeader {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = greenColor
-                ),
-                title = {
-                    Text(
-                        text = nameCategoryPolyclinic,
-                        fontFamily = poppinsBold,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 17.sp,
-                        color = whiteCustom,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-                navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            navController.navigateUp()
-                            doctorAllViewModel.resetFilter()
-                        },
-
-                        ) {
-                        Icon(
-                            modifier = Modifier.padding(start = 10.dp, end = 10.dp),
-                            imageVector = Icons.Default.ArrowCircleLeft,
-                            contentDescription = null,
-                            tint = whiteCustom
-                        )
-                    }
-
-                }
-            )
-
-            HorizontalDivider(
-                thickness = 1.dp,
-                color = whiteCustom
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = Color.White,
+                // Tambahkan elevasi untuk membuat bayangan
+                shadowElevation = 4.dp
             ) {
-                Text(
-                    modifier = Modifier.padding(start = 16.dp),
-                    text = "Menampilkan ${doctor.itemSnapshotList.items.size} Dokter",
-                    fontFamily = poppinsLight,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 15.sp,
-                    color = black
-                )
-
-                TextButton(
-                    onClick = { isOpenReviews = true },
-                    modifier = Modifier.padding(5.dp),
-                    colors = ButtonColors(
-                        containerColor = greenColor,
-                        contentColor = whiteCustom,
-                        disabledContentColor = greenColor,
-                        disabledContainerColor = whiteCustom
+                Column {
+                    TopAppBar(
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = greenColor
+                        ),
+                        title = {
+                            Text(
+                                text = nameCategoryPolyclinic,
+                                fontFamily = poppinsBold,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 17.sp,
+                                color = whiteCustom,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        },
+                        navigationIcon = {
+                            IconButton(
+                                onClick = {
+                                    navController.navigateUp()
+                                    doctorAllViewModel.resetFilter()
+                                },
+                                
+                                ) {
+                                Icon(
+                                    modifier = Modifier.padding(start = 10.dp, end = 10.dp),
+                                    imageVector = Icons.Default.ArrowCircleLeft,
+                                    contentDescription = null,
+                                    tint = whiteCustom
+                                )
+                            }
+                            
+                        }
                     )
-                ) {
+                    
+                    HorizontalDivider(
+                        thickness = 1.dp,
+                        color = whiteCustom
+                    )
+                    
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(color = Color.White),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Filter"
+                            modifier = Modifier.padding(start = 16.dp),
+                            text = "Menampilkan ${doctor.itemSnapshotList.items.size} Dokter",
+                            fontFamily = poppinsLight,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 15.sp,
+                            color = black
                         )
-                        Icon(
-                            imageVector = Icons.Default.ArrowDropDown, // Atau ikon lain sesuai kebutuhan
-                            contentDescription = "Filter Icon"
+                        
+                        TextButton(
+                            onClick = { isOpenReviews = true },
+                            modifier = Modifier.padding(5.dp),
+                            colors = ButtonColors(
+                                containerColor = greenColor,
+                                contentColor = whiteCustom,
+                                disabledContentColor = greenColor,
+                                disabledContainerColor = whiteCustom
+                            )
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Text(
+                                    text = "Filter"
+                                )
+                                Icon(
+                                    imageVector = Icons.Default.ArrowDropDown, // Atau ikon lain sesuai kebutuhan
+                                    contentDescription = "Filter Icon"
+                                )
+                            }
+                        }
+                    }
+                    
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.White)
+                            .padding(bottom = 8.dp)
+                    ) {
+                        SearchUserNameDoctor(
+                            userNameDoctor = userNameDoctor,
+                            onUserNameDoctorChange = { userNameDoctor = it },
+                            onSearchClicked = {
+                                doctorAllViewModel.fetchDoctorAll(
+                                    userName = userNameDoctor
+                                )
+                            }
                         )
                     }
+                    
                 }
             }
-
-            SearchUserNameDoctor(
-                userNameDoctor = userNameDoctor,
-                onUserNameDoctorChange = { userNameDoctor = it },
-                onSearchClicked = {
-                    doctorAllViewModel.fetchDoctorAll(
-                        userName = userNameDoctor
-                    )
-                }
-            )
+            
 
         }
         
         if (doctor.itemCount == 0 && doctor.loadState.refresh !is LoadState.Loading)
             item {
-                EmptyStateView()
+                EmptyStateView(
+                    message = "Belum ada dokter yang tersedia. Silakan periksa kembali nanti"
+                )
             }
         else
         items(
@@ -455,9 +478,7 @@ fun DoctorAllItem(
                     .clip(shape = RoundedCornerShape(8.dp)),
                 contentScale = ContentScale.Crop
             )
-
-
-
+            
             Box(
                 modifier = Modifier
                     .size(12.dp)
@@ -535,35 +556,5 @@ fun DoctorAllItem(
     }
 }
 
-// Komponen reusable untuk menampilkan empty state
-@Composable
-fun EmptyStateView(
-    message: String = "Data tidak ditemukan",
-    icon: ImageVector = Icons.Rounded.SearchOff
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = "Empty Data",
-            modifier = Modifier
-                .size(80.dp)
-                .padding(bottom = 16.dp),
-            tint = Color.Gray
-        )
-        
-        Text(
-            text = message,
-            fontFamily = poppinsMedium,
-            fontSize = 16.sp,
-            color = Color.Gray,
-            textAlign = TextAlign.Center
-        )
-    }
-}
+
 

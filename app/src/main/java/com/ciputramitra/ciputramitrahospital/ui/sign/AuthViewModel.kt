@@ -74,6 +74,48 @@ class AuthViewModel(
             )
         }
     }
+    
+    fun requestOTP(email: String) {
+        viewModelScope.launch {
+            _authState.value = StateManagement.Loading
+            val result = authUseCase.requestOTP(email = email)
+            result.fold(
+                onSuccess = { requestOTP ->
+                    _authState.value = StateManagement.RequestOtpSuccess(
+                        requestOtpResponse = requestOTP
+                    )
+                    
+                    // Rebuild HTTP client agar menggunakan token baru
+                    httpClient.rebuildClient() // Inject httpClient ke ViewModel
+                    
+                },
+                onFailure = { error ->
+                    _authState.value = StateManagement.Error(error.message.toString())
+                }
+            )
+        }
+    }
+    
+    fun verificationOTP(email: String, otp : String) {
+        viewModelScope.launch {
+            _authState.value = StateManagement.Loading
+            val result = authUseCase.verificationOTP(email = email, otp = otp)
+            result.fold(
+                onSuccess = { verificationOtpResponse ->
+                    _authState.value = StateManagement.VerificationOtpSuccess(
+                        verificationOtpResponse = verificationOtpResponse
+                    )
+                    
+                    // Rebuild HTTP client agar menggunakan token baru
+                    httpClient.rebuildClient() // Inject httpClient ke ViewModel
+                    
+                },
+                onFailure = { error ->
+                    _authState.value = StateManagement.Error(error.message.toString())
+                }
+            )
+        }
+    }
 
     fun register(
         name: String,
@@ -92,8 +134,6 @@ class AuthViewModel(
             result.fold(
                 onSuccess = { signResponse ->
                     // Simpan data user dan token hanya jika role adalah Pasien
-                    authUseCase.invoke(user = signResponse.user)
-                    authUseCase.invoke(token = signResponse.accessToken)
                     _authState.value = StateManagement.RegisterSuccess(signResponse = signResponse)
 
                     // Rebuild HTTP client agar menggunakan token baru

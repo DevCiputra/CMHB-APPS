@@ -6,6 +6,8 @@ import com.ciputramitra.ciputramitrahospital.response.category.CategoryResponse
 import com.ciputramitra.ciputramitrahospital.response.categoryPoly.CategoryPolyclinicResponse
 import com.ciputramitra.ciputramitrahospital.response.doctorall.DoctorAllResponse
 import com.ciputramitra.ciputramitrahospital.response.doctordetail.DoctorDetailResponse
+import com.ciputramitra.ciputramitrahospital.response.requestotp.RequestOtpResponse
+import com.ciputramitra.ciputramitrahospital.response.verificationotp.VerificationOtpResponse
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -34,6 +36,19 @@ interface ApiService {
         @Field("email") email: String,
         @Field("password") password: String
     ): Wrapper<SignResponse>
+    
+    @FormUrlEncoded
+    @POST("requestOTP")
+    suspend fun requestOTP(
+        @Field("email") email: String
+    ): Wrapper<RequestOtpResponse>
+    
+    @FormUrlEncoded
+    @POST("resetPassword")
+    suspend fun verificationOTP(
+        @Field("email") email: String,
+        @Field("otp") otp: String
+    ): Wrapper<VerificationOtpResponse>
 
 //    CategoryProduct
     @GET("category")

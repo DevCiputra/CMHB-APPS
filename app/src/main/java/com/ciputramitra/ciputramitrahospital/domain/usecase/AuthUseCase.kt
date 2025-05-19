@@ -3,6 +3,8 @@ package com.ciputramitra.ciputramitrahospital.domain.usecase
 import com.ciputramitra.ciputramitrahospital.domain.repository.AuthRepository
 import com.ciputramitra.ciputramitrahospital.response.auth.SignResponse
 import com.ciputramitra.ciputramitrahospital.response.auth.User
+import com.ciputramitra.ciputramitrahospital.response.requestotp.RequestOtpResponse
+import com.ciputramitra.ciputramitrahospital.response.verificationotp.VerificationOtpResponse
 import kotlinx.coroutines.flow.Flow
 
 class AuthUseCase(
@@ -22,6 +24,14 @@ class AuthUseCase(
 
     suspend operator fun invoke(email: String, password: String): Result<SignResponse> {
         return authRepository.login(email = email, password = password)
+    }
+    
+    suspend fun requestOTP(email : String): Result<RequestOtpResponse> {
+        return authRepository.requestOTP(email = email)
+    }
+    
+    suspend fun verificationOTP(email: String, otp: String): Result<VerificationOtpResponse> {
+        return authRepository.verificationOTP(email = email, otp = otp)
     }
 
     suspend operator fun invoke(token: String) {

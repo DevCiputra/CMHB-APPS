@@ -4,6 +4,8 @@ import com.ciputramitra.ciputramitrahospital.datastore.DataStoreManager
 import com.ciputramitra.ciputramitrahospital.domain.remote.ApiService
 import com.ciputramitra.ciputramitrahospital.response.auth.SignResponse
 import com.ciputramitra.ciputramitrahospital.response.auth.User
+import com.ciputramitra.ciputramitrahospital.response.requestotp.RequestOtpResponse
+import com.ciputramitra.ciputramitrahospital.response.verificationotp.VerificationOtpResponse
 import kotlinx.coroutines.flow.Flow
 import retrofit2.HttpException
 
@@ -67,7 +69,56 @@ class AuthRepositoryImpl(
             }
         }
     }
-
+    
+    override suspend fun requestOTP(email: String): Result<RequestOtpResponse> {
+        return try {
+            val response = apiService.requestOTP(email = email)
+            when(response.meta?.code == 200 && response.data != null) {
+                true -> Result.success(value = response.data)
+                false -> Result.failure(exception = Exception(response.meta?.message ?: "Not Found"))
+            }
+        }
+        catch (e: Exception) {
+            when {
+                e is HttpException && e.code() == 500 -> {
+                    Result.failure(exception =  Exception("Permintaan Reset Password Gagal"))
+                }
+                
+                e is HttpException && e.code() == 400 -> {
+                    Result.failure(exception =  Exception("Account tidak bisa di akses"))
+                }
+                else -> Result.failure(exception = e)
+                
+            }
+        }
+    }
+    
+    override suspend fun verificationOTP(
+        email: String,
+        otp: String
+    ): Result<VerificationOtpResponse> {
+        return try {
+            val response = apiService.verificationOTP(email = email, otp = otp)
+            when(response.meta?.code == 200 && response.data != null) {
+                true -> Result.success(value = response.data)
+                false -> Result.failure(exception = Exception(response.meta?.message ?: "Not Found"))
+            }
+        }
+        catch (e: Exception) {
+            when {
+                e is HttpException && e.code() == 500 -> {
+                    Result.failure(exception =  Exception("Server sibuk"))
+                }
+                
+                e is HttpException && e.code() == 400 -> {
+                    Result.failure(exception =  Exception("Kode OTP salah atau email tidak ditemukan"))
+                }
+                else -> Result.failure(exception = e)
+                
+            }
+        }
+    }
+    
     override suspend fun saveToken(token: String) {
         dataStoreManager.saveToken(token = token)
     }

@@ -18,8 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -48,6 +46,8 @@ import com.ciputramitra.ciputramitrahospital.ui.sign.AuthViewModel
 import com.ciputramitra.ciputramitrahospital.ui.sign.AuthenticationFace
 import com.ciputramitra.ciputramitrahospital.ui.sign.LoginScreen
 import com.ciputramitra.ciputramitrahospital.ui.sign.RegisterScreen
+import com.ciputramitra.ciputramitrahospital.ui.sign.ResetPassword
+import com.ciputramitra.ciputramitrahospital.ui.sign.VerificationOTP
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsMedium
 import com.ciputramitra.ciputramitrahospital.ui.theme.whiteCustom
 import com.ciputramitra.ciputramitrahospital.ui.transaction.TransactionScreen
@@ -69,8 +69,6 @@ fun NavGraph(
     val navController = rememberNavController()
     var selectedItemIndex by rememberSaveable { mutableIntStateOf(value = 0) }
     val context = LocalContext.current
-
-    var isAuthenticated by remember { mutableStateOf(false) }
 
 
     NavHost(
@@ -100,10 +98,9 @@ fun NavGraph(
         composable<Register> {
             RegisterScreen(
                 onRegisterSuccess = {
-                    if (token != null)
-                        navController.navigate(route = Home) {
-                            popUpTo(route = Login) { inclusive = true }
-                        }
+                    navController.navigate(route = Login) {
+                        popUpTo(route = Login) { inclusive = true }
+                    }
                 },
                 navController = navController,
                 authViewModel = authViewModel
@@ -223,6 +220,29 @@ fun NavGraph(
                 doctorAllViewModel = doctorAllViewModel,
                 navController = navController,
                 doctorID = args.doctorID
+            )
+        }
+        
+        composable<RequestOTP> {
+            BackHandler {
+                navController.navigateUp()
+            }
+            
+            ResetPassword(
+                navController = navController,
+                authViewModel = authViewModel
+            )
+        }
+        
+        composable<VerificationRequestOTP> {
+            BackHandler {
+                navController.navigateUp()
+            }
+            val args = it.toRoute<VerificationRequestOTP>()
+            VerificationOTP(
+                email = args.email,
+                authViewModel = authViewModel,
+                navController = navController
             )
         }
 

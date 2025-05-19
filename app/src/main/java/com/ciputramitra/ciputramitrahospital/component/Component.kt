@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.StarOutline
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.ContentPasteSearch
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
@@ -26,12 +27,14 @@ import androidx.compose.material.icons.outlined.Medication
 import androidx.compose.material.icons.outlined.Newspaper
 import androidx.compose.material.icons.outlined.StarRate
 import androidx.compose.material.icons.rounded.AccountCircle
+import androidx.compose.material.icons.rounded.ContentPasteSearch
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Medication
 import androidx.compose.material.icons.rounded.NestCamWiredStand
 import androidx.compose.material.icons.rounded.Newspaper
+import androidx.compose.material.icons.rounded.SearchOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
@@ -47,14 +50,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -62,7 +72,11 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.ciputramitra.ciputramitrahospital.R
 import com.ciputramitra.ciputramitrahospital.domain.data.BottomNavigationItems
+import com.ciputramitra.ciputramitrahospital.ui.theme.black
 import com.ciputramitra.ciputramitrahospital.ui.theme.greenColor
+import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsBold
+import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsLight
+import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsMedium
 import com.ciputramitra.ciputramitrahospital.ui.theme.textColor
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -81,14 +95,28 @@ fun FormTextField(
     singleLine: Boolean = false,
     prefix: @Composable (() -> Unit) ? = null,
     suffix: @Composable (() -> Unit) ? = null,
+    placeholder: String = "", // Parameter baru untuk hint
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         label = {
             Text(
-                text = label
+                text = label,
+                fontFamily = poppinsMedium,
+                fontSize = 12.sp,
             )
+        },
+        placeholder = {
+            // Tambahkan placeholder text di sini
+            if (placeholder.isNotEmpty()) {
+                Text(
+                    text = placeholder,
+                    color = Color.Gray.copy(alpha = 0.6f), // Warna placeholder yang lebih redup
+                    fontFamily = poppinsLight,
+                    fontSize = 12.sp
+                )
+            }
         },
         leadingIcon =  {
             Icon(
@@ -152,7 +180,13 @@ fun FormCheckBox(
             )
         )
         Text(
-            text = label
+            text = label,
+            fontFamily = poppinsMedium,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 12.sp,
+            color = Color.Gray,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
     if (error) {
@@ -176,8 +210,8 @@ fun bottomNavigation(): List<BottomNavigationItems> {
         ),
         BottomNavigationItems(
             title = "Artikel",
-            selectedIcon = Icons.Rounded.Newspaper,
-            unSelectedIcon = Icons.Outlined.Newspaper,
+            selectedIcon = Icons.Rounded.ContentPasteSearch,
+            unSelectedIcon = Icons.Outlined.ContentPasteSearch,
             selectedIconColor = greenColor,
             unSelectedIconColor = Color.Gray,
             selectedColor = Color.Black,
@@ -329,5 +363,42 @@ fun formatDate(dateString: String): String {
         return date?.let { targetFormat.format(it) } ?: dateString
     } catch (e: Exception) {
         return dateString
+    }
+}
+
+// Komponen reusable untuk menampilkan empty state
+@Composable
+fun EmptyStateView(
+    message: String
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(R.drawable.empty)
+                .crossfade(true)  // Efek fade saat loading
+                .build(),
+            contentDescription = "Gambar dari URL",
+            modifier = Modifier
+                .size(120.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            contentScale = ContentScale.Crop
+        )
+        
+        Text(
+            modifier = Modifier
+                .padding(horizontal = 16.dp),
+            text = message,
+            fontFamily = poppinsLight,
+            fontSize = 14.sp,
+            color = black,
+            fontWeight = FontWeight.Medium,
+            textAlign = TextAlign.Center
+        )
     }
 }

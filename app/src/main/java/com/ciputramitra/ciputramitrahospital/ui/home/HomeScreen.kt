@@ -1,4 +1,4 @@
-package com.ciputramitra.ciputramitrahospital.ui.home
+﻿package com.ciputramitra.ciputramitrahospital.ui.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -62,9 +62,11 @@ import com.ciputramitra.ciputramitrahospital.navgraph.ConsultationOnline
 import com.ciputramitra.ciputramitrahospital.response.auth.User
 import com.ciputramitra.ciputramitrahospital.response.category.Data
 import com.ciputramitra.ciputramitrahospital.ui.theme.Pink
+import com.ciputramitra.ciputramitrahospital.ui.theme.black
 import com.ciputramitra.ciputramitrahospital.ui.theme.greenColor
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsLight
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsMedium
+import com.ciputramitra.ciputramitrahospital.ui.theme.smoothColor
 import com.ciputramitra.ciputramitrahospital.ui.theme.whiteCustom
 import kotlinx.coroutines.delay
 
@@ -113,94 +115,36 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         stickyHeader {
-            Box(
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = Color.White)
+                    .fillMaxSize()
+                    .background(color = greenColor)
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
+                Text(
+                    text = "CIPUTRA MITRA HOSPITAL\nBANJARMASIN",
+                    fontFamily = poppinsMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 12.sp,
+                    color = whiteCustom
+                )
+                
+                Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(start = 16.dp, top = 12.dp, end = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start,
+                        .size(30.dp)
+                        .background(whiteCustom, CircleShape)
+                        .clip(CircleShape),
+                    contentAlignment = Alignment.Center
                 ) {
-
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(fetchUser?.avatar ?: "")
-                            .error(R.drawable.hoodie_man_profile)
-                            .fallback(R.drawable.hoodie_man_profile)
-                            .build(),
-                        contentDescription = "image_profile",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(45.dp)
-                            .clip(shape = CircleShape)
+                    Text(
+                        text = fetchUser?.name?.first().toString(),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = black
                     )
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(start = 16.dp, top = 8.dp, end = 16.dp),
-                            verticalArrangement = Arrangement.spacedBy(1.dp),
-                            horizontalAlignment = Alignment.Start
-                        ) {
-                            Text(
-                                text = "Hi!",
-                                fontSize = 19.sp,
-                                fontFamily = poppinsMedium,
-                                color = Color.Black
-                            )
-
-                            Text(
-                                modifier = Modifier
-                                    .padding(start = 2.dp),
-                                text = fetchUser?.name?.uppercase() ?: "Hoodie man",
-                                fontSize = 13.sp,
-                                fontFamily = poppinsMedium,
-                                color = Color.Gray,
-                                overflow = TextOverflow.Ellipsis
-                            )
-
-                        }
-
-                        BadgedBox(
-                            badge = {
-                                Badge(
-                                    modifier = Modifier.offset(x = (- 7).dp , y = 1.dp),
-                                    content = {
-                                        Text(
-                                            text = "0",
-                                            fontSize = 10.sp ,
-                                            fontFamily = poppinsMedium
-                                        )
-                                    }
-                                )
-                            }
-                        ) {
-                            IconButton(
-                                onClick = {
-//                            onClickCart()
-                                }
-                            ) {
-                                Icon(
-                                    modifier = Modifier.size(30.dp),
-                                    imageVector = Icons.Default.CircleNotifications,
-                                    contentDescription = null
-                                )
-                            }
-
-                        }
-                    }
-
                 }
-
             }
 
 

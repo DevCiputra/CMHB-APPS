@@ -68,9 +68,6 @@ fun RegisterScreen(
     authViewModel: AuthViewModel,
     onRegisterSuccess: () -> Unit,
 ) {
-    val snackBarHostState = remember {
-        SnackbarHostState()
-    }
     val validationAuth: ValidationsAuth = viewModel()
     val registerState by authViewModel.authState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -122,14 +119,6 @@ fun RegisterScreen(
                 },
                 expandedHeight = TopAppBarDefaults.MediumAppBarExpandedHeight
             )
-        },
-        snackbarHost = {
-            SnackbarHost( hostState = snackBarHostState) {
-                Snackbar(
-                    containerColor = MaterialTheme.colorScheme.error,
-                    snackbarData = it
-                )
-            }
         }
     ) { paddingValues ->
         Box(
@@ -150,6 +139,7 @@ fun RegisterScreen(
                         validationAuth.userName = validationAuth.userName.copy(value = it)
                     },
                     label = "Username",
+                    placeholder = "Nama lengkap anda",
                     error = validationAuth.userName.showError,
                     leadingIcon = Icons.Default.VerifiedUser,
                     keyboardType = KeyboardType.Text,
@@ -161,6 +151,7 @@ fun RegisterScreen(
                         validationAuth.email = validationAuth.email.copy(value = it)
                     },
                     label = "Email",
+                    placeholder = "masukan email valid",
                     error = validationAuth.email.showError,
                     leadingIcon = Icons.Default.Email,
                     keyboardType = KeyboardType.Email,
@@ -182,6 +173,7 @@ fun RegisterScreen(
                         )
                     },
                     label = "Password",
+                    placeholder = "Minimal 6 character",
                     error = validationAuth.password.showError,
                     leadingIcon = Icons.Default.Fingerprint,
                     keyboardType = KeyboardType.Password,
@@ -198,7 +190,8 @@ fun RegisterScreen(
                     onValueChange = {
                         validationAuth.whatsapp = validationAuth.whatsapp.copy(value = it)
                     },
-                    label = "Whatsapp dimulau angka 0",
+                    label = "Whatsapp",
+                    placeholder = "mulai dari angka 0",
                     error = validationAuth.whatsapp.showError,
                     leadingIcon = Icons.Default.Whatsapp,
                     keyboardType = KeyboardType.Text,
@@ -210,7 +203,8 @@ fun RegisterScreen(
                     onValueChange = {
                         validationAuth.address = validationAuth.address.copy(value = it)
                     },
-                    label = "Tulis alamat lengkap",
+                    label = "Alamat lengkap",
+                    placeholder = "contoh : alamat , kota , provinsi",
                     error = validationAuth.address.showError,
                     leadingIcon = Icons.Default.LocationCity,
                     keyboardType = KeyboardType.Text,
@@ -249,7 +243,7 @@ fun RegisterScreen(
                                     role = "Pasien",
                                     whatsaap = validationAuth.whatsapp.value,
                                     address = validationAuth.address.value,
-                                    status_aktif = "online",
+                                    status_aktif = "offline",
                                     fcm = token
                                 )
                             }
@@ -270,15 +264,12 @@ fun RegisterScreen(
             when(val state = registerState) {
                 is StateManagement.Loading -> LoadingLottieAnimation()
                 is StateManagement.Error -> LaunchedEffect(key1 = state) {
-                    snackBarHostState.showSnackbar(
-                        message = state.message,
-                        withDismissAction = true
-                    )
+                    Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
                 }
 
                 is StateManagement.RegisterSuccess -> LaunchedEffect(key1 = state) {
-                    Toast.makeText(context, "Silahkan Lanjutkan Login", Toast.LENGTH_LONG).show()
                     onRegisterSuccess()
+                    Toast.makeText(context, "Register berhasil silahkan login", Toast.LENGTH_LONG).show()
                 }
 
                 else -> authViewModel.clearAuthState()

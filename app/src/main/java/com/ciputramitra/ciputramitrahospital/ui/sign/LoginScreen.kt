@@ -1,5 +1,6 @@
 package com.ciputramitra.ciputramitrahospital.ui.sign
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -33,8 +35,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -45,6 +50,7 @@ import com.ciputramitra.ciputramitrahospital.component.FormTextField
 import com.ciputramitra.ciputramitrahospital.component.LoadingLottieAnimation
 import com.ciputramitra.ciputramitrahospital.domain.state.StateManagement
 import com.ciputramitra.ciputramitrahospital.navgraph.Register
+import com.ciputramitra.ciputramitrahospital.navgraph.RequestOTP
 import com.ciputramitra.ciputramitrahospital.ui.theme.greenColor
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsBold
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsMedium
@@ -56,11 +62,10 @@ fun LoginScreen(
     authViewModel: AuthViewModel,
     onLoginSuccess: () -> Unit
 ) {
-    val snackBarHostState = remember {
-        SnackbarHostState()
-    }
+    
     val validationAuth: ValidationsAuth = viewModel()
     val loginState by authViewModel.authState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -92,14 +97,6 @@ fun LoginScreen(
                 expandedHeight = TopAppBarDefaults.LargeAppBarExpandedHeight
             )
         },
-        snackbarHost = {
-            SnackbarHost( hostState = snackBarHostState) {
-                Snackbar(
-                    containerColor = MaterialTheme.colorScheme.error,
-                    snackbarData = it
-                )
-            }
-        }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -119,6 +116,7 @@ fun LoginScreen(
                         validationAuth.email = validationAuth.email.copy(value = it)
                     },
                     label = "Email",
+                    placeholder = "masukan email terdaftar",
                     error = validationAuth.email.showError,
                     leadingIcon = Icons.Default.AccountCircle,
                     keyboardType = KeyboardType.Email,
@@ -141,6 +139,7 @@ fun LoginScreen(
                         )
                     },
                     label = "Password",
+                    placeholder = "masukan password anda",
                     error = validationAuth.password.showError,
                     leadingIcon = Icons.Default.Fingerprint,
                     keyboardType = KeyboardType.Password,
@@ -155,7 +154,7 @@ fun LoginScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     FormCheckBox(
@@ -164,7 +163,22 @@ fun LoginScreen(
                             validationAuth.checkBoxChange = it
                         },
                         error = validationAuth.showCheckBoxError,
-                        label = "Accept terms and conditions"
+                        label = "Remember me"
+                    )
+                    
+                    Text(
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .clickable {
+                                navController.navigate(
+                                    route = RequestOTP
+                                )
+                            },
+                        text = "Reset password ?",
+                        fontFamily = poppinsMedium,
+                        fontSize = 12.sp,
+                        color = greenColor,
+                        style = TextStyle(textDecoration = TextDecoration.Underline)
                     )
                 }
                 Button(
@@ -221,9 +235,11 @@ fun LoginScreen(
                                     )
                                 },
                             text = "Sign up",
-                            fontFamily = poppinsMedium,
+                            fontFamily = poppinsBold,
                             fontSize = 12.sp,
-                            color = greenColor
+                            color = greenColor,
+                            fontWeight = FontWeight.Medium,
+                            style = TextStyle(textDecoration = TextDecoration.Underline)
                         )
                     }
 
@@ -232,16 +248,14 @@ fun LoginScreen(
                         modifier = Modifier.weight(1f)
                     )
                 }
+                
             }
 
             when(val state = loginState) {
                 is StateManagement.Loading -> LoadingLottieAnimation()
                 is StateManagement.Error ->  {
                     LaunchedEffect(key1 = state ) {
-                        snackBarHostState.showSnackbar(
-                            message = state.message,
-                            withDismissAction = true
-                        )
+                        Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
                     }
                 }
 

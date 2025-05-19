@@ -1,6 +1,8 @@
 package com.ciputramitra.ciputramitrahospital.ui.doctorall
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,11 +29,8 @@ import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Medication
 import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material.icons.rounded.RateReview
 import androidx.compose.material.icons.rounded.School
 import androidx.compose.material.icons.rounded.Share
-import androidx.compose.material.icons.rounded.StarRate
-import androidx.compose.material.icons.rounded.Videocam
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -42,6 +41,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -50,11 +50,13 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,12 +64,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -75,12 +79,15 @@ import com.ciputramitra.ciputramitrahospital.R
 import com.ciputramitra.ciputramitrahospital.component.LoadingLottieAnimation
 import com.ciputramitra.ciputramitrahospital.component.formatDate
 import com.ciputramitra.ciputramitrahospital.domain.state.StateManagement
+import com.ciputramitra.ciputramitrahospital.navgraph.ProfilePatient
+import com.ciputramitra.ciputramitrahospital.response.auth.User
 import com.ciputramitra.ciputramitrahospital.response.doctordetail.Data
 import com.ciputramitra.ciputramitrahospital.response.doctordetail.Jadwal
 import com.ciputramitra.ciputramitrahospital.response.doctordetail.Medic
 import com.ciputramitra.ciputramitrahospital.response.doctordetail.Pendidikan
 import com.ciputramitra.ciputramitrahospital.response.doctordetail.Pengalaman
 import com.ciputramitra.ciputramitrahospital.response.doctordetail.Ulasans
+import com.ciputramitra.ciputramitrahospital.ui.profile.ProfilePatientViewModel
 import com.ciputramitra.ciputramitrahospital.ui.theme.black
 import com.ciputramitra.ciputramitrahospital.ui.theme.greenColor
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsBold
@@ -95,14 +102,37 @@ import com.ciputramitra.ciputramitrahospital.ui.theme.whiteCustom
 fun DoctorDetailScreen(
     doctorAllViewModel: DoctorAllViewModel,
     navController: NavHostController,
-    doctorID: Int
+    doctorID: Int,
+    profilePatientViewModel: ProfilePatientViewModel,
+    fetchUser: User?
 ) {
 
 
 
     val doctorDetailState by doctorAllViewModel.doctorDetailState.collectAsStateWithLifecycle()
-    LaunchedEffect(key1 = doctorID) {
+    val profilePatient by profilePatientViewModel.fetchProfilePatientUserID.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    
+    LaunchedEffect(key1 = doctorID , key2 = fetchUser?.id) {
         doctorAllViewModel.fetchDoctorDetail(id = doctorID)
+        profilePatientViewModel.fetchProfilePatientByUserID(userID = fetchUser?.id ?: 0)
+    }
+    
+    
+    
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+    var isOpenReservation by rememberSaveable {
+        mutableStateOf(value = false)
+    }
+    
+    var isOpenConsultation by rememberSaveable {
+        mutableStateOf(value = false)
+    }
+    
+    var isOpenProfilePatientEmpty by rememberSaveable {
+        mutableStateOf(value = false)
     }
 
     Scaffold(
@@ -159,33 +189,22 @@ fun DoctorDetailScreen(
             ) {
                 Button(
                     modifier = Modifier
-                        .weight(1f)
                         .padding(horizontal = 12.dp) ,
                     shape = RoundedCornerShape(8.dp) ,
                     colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = Color.LightGray
+                        containerColor = smoothColor
                     ) ,
                     onClick = {
-//                        isOpenCart = true
+                        isOpenReservation = true
                     }
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.CalendarMonth ,
                         contentDescription = null ,
                         modifier = Modifier
-                            .size(22.dp)
+                            .size(26.dp)
                             .padding(5.dp) ,
                         tint = Color.White
-                    )
-
-                    Text(
-                        color = Color.White ,
-                        text = "Reservasi" ,
-                        fontFamily = poppinsMedium ,
-                        fontSize = 12.sp ,
-                        fontWeight = FontWeight.Bold ,
-                        maxLines = 1 ,
-                        overflow = TextOverflow.Ellipsis
                     )
                 }
 
@@ -198,17 +217,12 @@ fun DoctorDetailScreen(
                     ) ,
                     shape = RoundedCornerShape(8.dp) ,
                     onClick = {
-//                        isOpenCart = true
+                        Log.d("Tamvan", profilePatient.toString())
+                        if (profilePatient == null)
+                            isOpenProfilePatientEmpty = true
+                        else isOpenConsultation = true
                     }
                 ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Videocam ,
-                        contentDescription = null ,
-                        modifier = Modifier
-                            .size(22.dp)
-                            .padding(5.dp) ,
-                        tint = Color.White
-                    )
                     Text(
                         text = "Konsultasi online" ,
                         fontFamily = poppinsMedium ,
@@ -249,6 +263,50 @@ fun DoctorDetailScreen(
                     DetailProfileDoctor(
                         dataDoctor = state.doctorDetailResponse.data
                     )
+                    
+                    if (isOpenReservation) {
+                        ModalBottomSheet(
+                            sheetState = sheetState,
+                            onDismissRequest = {
+                                isOpenReservation = false
+                            }
+                        ) {
+                            BottomSheetReservationOffline(
+                                dataDoctor = state.doctorDetailResponse.data
+                            )
+                        }
+                    }
+                    
+                    if (isOpenConsultation) {
+                        ModalBottomSheet(
+                            sheetState = sheetState,
+                            onDismissRequest = {
+                                isOpenConsultation = false
+                                profilePatientViewModel.clearProfilePatient()
+                            }
+                        ) {
+                            BottomSheetConsultation(
+                                dataDoctor = state.doctorDetailResponse.data
+                            )
+                        }
+                    }
+                    
+                    if (isOpenProfilePatientEmpty) {
+                        ModalBottomSheet(
+                            sheetState = sheetState,
+                            onDismissRequest = {
+                                isOpenProfilePatientEmpty = false
+                                profilePatientViewModel.clearProfilePatient()
+                            }
+                        ) {
+                            BottomSheetPatientEmpty(
+                                navController = navController,
+                                onReset = {
+                                    isOpenProfilePatientEmpty = false
+                                }
+                            )
+                        }
+                    }
 
                 }
 
@@ -259,6 +317,153 @@ fun DoctorDetailScreen(
     }
 
 
+}
+
+@Composable
+fun BottomSheetPatientEmpty(
+    navController: NavController,
+    onReset: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            
+            AsyncImage(
+                model = ImageRequest.Builder(context = LocalContext.current)
+                    .data(R.drawable.empty)
+                    .error(R.drawable.logo)
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(80.dp),
+                contentScale = ContentScale.Crop
+            )
+            
+            Text(
+                text = "Profile empty ( Belum ada profile )",
+                fontFamily = poppinsBold,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = black
+            )
+            
+            Text(
+                modifier = Modifier.padding(horizontal = 14.dp),
+                text = "Yuk, buat profil agar pengalamanmu lebih lengkap. silahkan tekan tombol dibawah ini",
+                fontFamily = poppinsLight,
+                fontSize = 12.sp,
+                color = Color.Gray,
+                textAlign = TextAlign.Center
+            )
+            
+            Button(
+                onClick = {
+                    navController.navigate(
+                        route = ProfilePatient
+                    )
+                    onReset()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = whiteCustom,
+                    containerColor = greenColor
+                )
+            ) {
+                Text(
+                    text = "Buat profile sekarang",
+                    
+                )
+            }
+        }
+        
+    }
+}
+
+
+
+@Composable
+fun BottomSheetConsultation(dataDoctor: Data) {
+
+}
+
+@Composable
+fun BottomSheetReservationOffline(dataDoctor: Data) {
+    
+    val context = LocalContext.current
+    val url = dataDoctor.linkAccuity
+    
+    Box(
+        modifier = Modifier
+            .fillMaxWidth(),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            
+            AsyncImage(
+                model = ImageRequest.Builder(context = LocalContext.current)
+                    .data(R.drawable.term)
+                    .error(R.drawable.logo)
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(80.dp),
+                contentScale = ContentScale.Crop
+            )
+            
+            Text(
+                text = "Reservasi Offline ( Datang Langsung )",
+                fontFamily = poppinsBold,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = black
+            )
+            
+            Text(
+                modifier = Modifier.padding(horizontal = 14.dp),
+                text = "Saat ini kami belum menerima reservasi online. Mohon datang langsung untuk mendapatkan nomor antrian.",
+                fontFamily = poppinsLight,
+                fontSize = 12.sp,
+                color = Color.Gray,
+                textAlign = TextAlign.Center
+            )
+            
+            Button(
+                onClick = {
+                    if (url.isNotEmpty()) {
+                        val formattedUrl = if (!url.startsWith("https://") && !url.startsWith("https://")) {
+                            "https://$url"
+                        } else {
+                            url
+                        }
+                        
+                        val intent = Intent(Intent.ACTION_VIEW, formattedUrl.toUri())
+                        context.startActivity(intent)
+                    } else {
+                        Toast.makeText(context, "URL reservasi tidak tersedia", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = whiteCustom,
+                    containerColor = greenColor
+                )
+            ) {
+                Text(
+                    text = "Reservasi sekarang"
+                )
+            }
+        }
+        
+    }
 }
 
 @Composable
@@ -689,16 +894,18 @@ fun ProfileContent(dataDoctor: Data) {
                 Text(
                     modifier = Modifier.padding(top = 6.dp),
                     text = "BIOGRAFI",
-                    fontFamily = poppinsMedium,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium
+                    fontFamily = poppinsBold,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = black
+                    
                 )
             }
         }
         
         item {
             ExpandableBiography(
-                text = dataDoctor.biografi
+                text = dataDoctor.biografi,
             )
         }
         
@@ -716,9 +923,10 @@ fun ProfileContent(dataDoctor: Data) {
                 Text(
                     modifier = Modifier.padding(top = 6.dp),
                     text = "Pendidikan",
-                    fontFamily = poppinsMedium,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium
+                    fontFamily = poppinsBold,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = black
                 )
             }
         }
@@ -744,16 +952,17 @@ fun ProfileContent(dataDoctor: Data) {
                 Text(
                     modifier = Modifier.padding(top = 6.dp),
                     text = "Pengalaman Praktek",
-                    fontFamily = poppinsMedium,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium
+                    fontFamily = poppinsBold,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = black
                 )
             }
         }
         
         item {
             ExpandableAction(
-                dataDoctor = dataDoctor.medics
+                dataDoctor = dataDoctor.pengalamans
             )
         }
         
@@ -772,23 +981,24 @@ fun ProfileContent(dataDoctor: Data) {
                 Text(
                     modifier = Modifier.padding(top = 6.dp),
                     text = "Tindakan Medis",
-                    fontFamily = poppinsMedium,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium
+                    fontFamily = poppinsBold,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = black
                 )
             }
         }
         
         item {
             ExpandableExperience(
-                dataDoctor = dataDoctor.pengalamans
+                dataDoctor = dataDoctor.medics
             )
         }
     }
 }
 
 @Composable
-fun ExpandableAction(dataDoctor: List<Medic>) {
+fun ExpandableAction(dataDoctor: List<Pengalaman>) {
     // State untuk melacak apakah daftar tindakan medis sedang diperluas atau tidak
     var isExpanded by remember { mutableStateOf(false) }
     
@@ -811,13 +1021,13 @@ fun ExpandableAction(dataDoctor: List<Medic>) {
             )
         } else {
             // Daftar tindakan medis
-            dataToShow.forEach { itemMedic ->
+            dataToShow.forEach { Pengalamans ->
                 Text(
-                    text = "- ${itemMedic.namaTindakanMedis}",
+                    text = "- ${Pengalamans.namaPengalamanPraktek}",
                     fontFamily = poppinsMedium,
-                    fontSize = 12.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color.Gray
+                    color = black
                 )
             }
             
@@ -854,7 +1064,7 @@ fun ExpandableAction(dataDoctor: List<Medic>) {
 }
 
 @Composable
-fun ExpandableExperience(dataDoctor: List<Pengalaman>) {
+fun ExpandableExperience(dataDoctor: List<Medic>) {
     // State untuk melacak apakah daftar pengalaman sedang diperluas atau tidak
     var isExpanded by remember { mutableStateOf(false) }
     
@@ -877,13 +1087,13 @@ fun ExpandableExperience(dataDoctor: List<Pengalaman>) {
             )
         } else {
             // Daftar pengalaman
-            dataToShow.forEach { itemExperience ->
+            dataToShow.forEach { itemMedics ->
                 Text(
-                    text = "- ${itemExperience.namaPengalamanPraktek}",
+                    text = "- ${itemMedics.namaTindakanMedis}",
                     fontFamily = poppinsMedium,
-                    fontSize = 12.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color.Gray
+                    color = black
                 )
             }
             
@@ -948,9 +1158,9 @@ fun ExpandableEducation(dataEducation: List<Pendidikan>) {
                 Text(
                     text = "- ${itemEducation.namaRiwayatPendidikan}",
                     fontFamily = poppinsMedium,
-                    fontSize = 12.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color.Gray
+                    color = black
                 )
             }
             
@@ -998,12 +1208,12 @@ fun ExpandableBiography(text: String) {
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = text,
-            fontFamily = poppinsLight,
-            fontSize = 12.sp,
+            fontFamily = poppinsMedium,
+            fontSize = 14.sp,
             maxLines = if (isExpanded) Int.MAX_VALUE else 4, // Tidak terbatas saat diperluas
             overflow = TextOverflow.Ellipsis,
             fontWeight = FontWeight.Medium,
-            color = Color.Gray
+            color = black
         )
         
         // Row untuk tombol expand/collapse dengan arrow
@@ -1039,7 +1249,7 @@ fun HeaderProfileDoctor(dataDoctor: Data) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp , end =  16.dp, top = 16.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 

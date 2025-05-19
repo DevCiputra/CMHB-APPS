@@ -6,6 +6,8 @@ import com.ciputramitra.ciputramitrahospital.response.category.CategoryResponse
 import com.ciputramitra.ciputramitrahospital.response.categoryPoly.CategoryPolyclinicResponse
 import com.ciputramitra.ciputramitrahospital.response.doctorall.DoctorAllResponse
 import com.ciputramitra.ciputramitrahospital.response.doctordetail.DoctorDetailResponse
+import com.ciputramitra.ciputramitrahospital.response.profilepasien.FetchProfilePasienIDResponse
+import com.ciputramitra.ciputramitrahospital.response.profilepasien.post.PostProfilePatientResponse
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -63,5 +65,21 @@ interface ApiService {
     suspend fun fetchDetailDoctor(
         @Query("id") id: Int
     ): DoctorDetailResponse
+    
+    @GET("FetchProfileByUserId")
+    suspend fun fetchProfileByUserID(
+        @Query("user_id") userID: Int,
+    ): FetchProfilePasienIDResponse
+    
+    @FormUrlEncoded
+    @POST("profilePasien")
+    suspend fun PostProfilePatient(
+        @Field("user_id") userID: Int,
+        @Field("gender") gender: String,
+        @Field("golongan_darah") golongaDarah: String,
+        @Field("riwayat_medis") riwayatMedis: String,
+        @Field("alergi") alergi: String,
+        @Field("tempat_tanggal_lahir") tempatTanggalLahir: String,
+    ): Wrapper<PostProfilePatientResponse>
 
 }

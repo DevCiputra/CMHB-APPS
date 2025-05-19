@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -81,6 +82,8 @@ fun FormTextField(
     singleLine: Boolean = false,
     prefix: @Composable (() -> Unit) ? = null,
     suffix: @Composable (() -> Unit) ? = null,
+    placeholder: @Composable (() -> Unit)? = null,
+    enable: Boolean = true
 ) {
     OutlinedTextField(
         value = value,
@@ -118,7 +121,9 @@ fun FormTextField(
         shape = RoundedCornerShape(18.dp),
         singleLine = singleLine,
         prefix = prefix,
-        suffix = suffix
+        suffix = suffix,
+        placeholder = placeholder,
+        enabled = enable
     )
     if (error) {
         Text(

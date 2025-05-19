@@ -18,8 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -43,9 +41,10 @@ import com.ciputramitra.ciputramitrahospital.ui.doctorall.DoctorDetailScreen
 import com.ciputramitra.ciputramitrahospital.ui.home.HomeScreen
 import com.ciputramitra.ciputramitrahospital.ui.home.HomeViewModel
 import com.ciputramitra.ciputramitrahospital.ui.info.InfoScreen
+import com.ciputramitra.ciputramitrahospital.ui.profile.PostProfileScreen
+import com.ciputramitra.ciputramitrahospital.ui.profile.ProfilePatientViewModel
 import com.ciputramitra.ciputramitrahospital.ui.profile.ProfileScreen
 import com.ciputramitra.ciputramitrahospital.ui.sign.AuthViewModel
-import com.ciputramitra.ciputramitrahospital.ui.sign.AuthenticationFace
 import com.ciputramitra.ciputramitrahospital.ui.sign.LoginScreen
 import com.ciputramitra.ciputramitrahospital.ui.sign.RegisterScreen
 import com.ciputramitra.ciputramitrahospital.ui.theme.poppinsMedium
@@ -60,6 +59,7 @@ fun NavGraph(
     homeViewModel: HomeViewModel,
     consultationViewModel: ConsultationViewModel,
     doctorAllViewModel: DoctorAllViewModel,
+    profilePatientViewModel: ProfilePatientViewModel,
 ) {
 
     val isLoggedIn by authViewModel.isLoggedIn.collectAsStateWithLifecycle(initialValue = false)
@@ -69,8 +69,6 @@ fun NavGraph(
     val navController = rememberNavController()
     var selectedItemIndex by rememberSaveable { mutableIntStateOf(value = 0) }
     val context = LocalContext.current
-
-    var isAuthenticated by remember { mutableStateOf(false) }
 
 
     NavHost(
@@ -89,13 +87,7 @@ fun NavGraph(
                 authViewModel = authViewModel
             )
         }
-
-        composable<Authentication> {
-            AuthenticationFace(
-                navController = navController,
-                homeViewModel = homeViewModel
-            )
-        }
+        
 
         composable<Register> {
             RegisterScreen(
@@ -222,7 +214,21 @@ fun NavGraph(
             DoctorDetailScreen(
                 doctorAllViewModel = doctorAllViewModel,
                 navController = navController,
-                doctorID = args.doctorID
+                doctorID = args.doctorID,
+                profilePatientViewModel = profilePatientViewModel,
+                fetchUser = fetchUser
+            )
+        }
+        
+        composable<ProfilePatient> {
+            BackHandler {
+                navController.navigateUp()
+            }
+            
+            PostProfileScreen(
+                navController = navController,
+                profilePatientViewModel = profilePatientViewModel,
+                fetchUser = fetchUser
             )
         }
 

@@ -69,4 +69,4 @@ data class RatesArgs(
 )
 
 @Serializable
-object EditProfile
+object ProfilePatient

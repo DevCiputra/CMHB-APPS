@@ -4,6 +4,8 @@ import com.ciputramitra.ciputramitrahospital.response.auth.SignResponse
 import com.ciputramitra.ciputramitrahospital.response.auth.User
 import com.ciputramitra.ciputramitrahospital.response.category.CategoryResponse
 import com.ciputramitra.ciputramitrahospital.response.doctordetail.DoctorDetailResponse
+import com.ciputramitra.ciputramitrahospital.response.profilepasien.FetchProfilePasienIDResponse
+import com.ciputramitra.ciputramitrahospital.response.profilepasien.post.PostProfilePatientResponse
 
 sealed class StateManagement {
     data object Idle: StateManagement()
@@ -24,5 +26,10 @@ sealed class StateManagement {
 // Detail Doctor
     data class DoctorDetailSuccess(
         val doctorDetailResponse: DoctorDetailResponse
+    ): StateManagement()
+    
+//    Profile
+    data class PostProfilePatientSuccess(
+        val postProfilePatientResponse: PostProfilePatientResponse
     ): StateManagement()
 }

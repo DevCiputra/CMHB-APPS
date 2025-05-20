@@ -8,12 +8,13 @@ object Login
 @Serializable
 object Register
 
-
 @Serializable
 object Authentication
 
 @Serializable
 object Home
+
+
 
 @Serializable
 object ConsultationOnline
@@ -31,9 +32,41 @@ data class DoctorDetailArgs(
 )
 
 @Serializable
-object RequestOTP
+object Cart
 
 @Serializable
-data class VerificationRequestOTP(
-    val email: String
+object Checkout
+
+@Serializable
+object GoogleMap
+
+@Serializable
+data class AddressShippingArgs(
+    val cityCoordinates : String ,
+    val addressCoordinates : String
 )
+
+@Serializable
+data class PaymentArgs(
+    val tokenPayment: String,
+    val transactionID: Int
+)
+
+@Serializable
+data class DetailTransactionArgs(
+    val id: Int
+)
+
+@Serializable
+data class RatesArgs(
+    val userID: Int,
+    val productID: Int,
+    val variant: String,
+    val size: String,
+    val category: String,
+    val image: String,
+    val nameProduct: String
+)
+
+@Serializable
+object EditProfile

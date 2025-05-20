@@ -27,6 +27,7 @@ import com.ciputramitra.ciputramitrahospital.navgraph.NavGraph
 import com.ciputramitra.ciputramitrahospital.ui.consultation.ConsultationViewModel
 import com.ciputramitra.ciputramitrahospital.ui.doctorall.DoctorAllViewModel
 import com.ciputramitra.ciputramitrahospital.ui.home.HomeViewModel
+import com.ciputramitra.ciputramitrahospital.ui.profile.ProfilePatientViewModel
 import com.ciputramitra.ciputramitrahospital.ui.sign.AuthViewModel
 import com.ciputramitra.ciputramitrahospital.ui.theme.greenColor
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -37,6 +38,7 @@ class MainActivity : ComponentActivity() {
     private val homeViewModel: HomeViewModel by viewModel()
     private val doctorAllViewModel: DoctorAllViewModel by viewModel()
     private val consultationViewModel: ConsultationViewModel by viewModel()
+    private val profilePatientViewModel: ProfilePatientViewModel by viewModel()
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +54,8 @@ class MainActivity : ComponentActivity() {
                 authViewModel = authViewModel,
                 homeViewModel = homeViewModel,
                 consultationViewModel = consultationViewModel,
-                doctorAllViewModel = doctorAllViewModel
+                doctorAllViewModel = doctorAllViewModel,
+                profilePatientViewModel = profilePatientViewModel
             )
         }
     }

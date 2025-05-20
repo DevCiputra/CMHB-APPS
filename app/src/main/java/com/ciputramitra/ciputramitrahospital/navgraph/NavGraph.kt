@@ -41,9 +41,10 @@ import com.ciputramitra.ciputramitrahospital.ui.doctorall.DoctorDetailScreen
 import com.ciputramitra.ciputramitrahospital.ui.home.HomeScreen
 import com.ciputramitra.ciputramitrahospital.ui.home.HomeViewModel
 import com.ciputramitra.ciputramitrahospital.ui.info.InfoScreen
+import com.ciputramitra.ciputramitrahospital.ui.profile.PostProfileScreen
+import com.ciputramitra.ciputramitrahospital.ui.profile.ProfilePatientViewModel
 import com.ciputramitra.ciputramitrahospital.ui.profile.ProfileScreen
 import com.ciputramitra.ciputramitrahospital.ui.sign.AuthViewModel
-import com.ciputramitra.ciputramitrahospital.ui.sign.AuthenticationFace
 import com.ciputramitra.ciputramitrahospital.ui.sign.LoginScreen
 import com.ciputramitra.ciputramitrahospital.ui.sign.RegisterScreen
 import com.ciputramitra.ciputramitrahospital.ui.sign.ResetPassword
@@ -60,6 +61,7 @@ fun NavGraph(
     homeViewModel: HomeViewModel,
     consultationViewModel: ConsultationViewModel,
     doctorAllViewModel: DoctorAllViewModel,
+    profilePatientViewModel: ProfilePatientViewModel,
 ) {
 
     val isLoggedIn by authViewModel.isLoggedIn.collectAsStateWithLifecycle(initialValue = false)
@@ -87,13 +89,7 @@ fun NavGraph(
                 authViewModel = authViewModel
             )
         }
-
-        composable<Authentication> {
-            AuthenticationFace(
-                navController = navController,
-                homeViewModel = homeViewModel
-            )
-        }
+        
 
         composable<Register> {
             RegisterScreen(
@@ -219,7 +215,21 @@ fun NavGraph(
             DoctorDetailScreen(
                 doctorAllViewModel = doctorAllViewModel,
                 navController = navController,
-                doctorID = args.doctorID
+                doctorID = args.doctorID,
+                profilePatientViewModel = profilePatientViewModel,
+                fetchUser = fetchUser
+            )
+        }
+        
+        composable<ProfilePatient> {
+            BackHandler {
+                navController.navigateUp()
+            }
+            
+            PostProfileScreen(
+                navController = navController,
+                profilePatientViewModel = profilePatientViewModel,
+                fetchUser = fetchUser
             )
         }
         
